@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "path": "src\\pages"
+    },
+    {
+      "path": "src\\routes"
+    },
+    {
+      "path": "src\\store"
+    },
+    {
+      "path": "src\\shared"
+    },
+    {
+      "path": "src\\services"
+    },
+    {
+      "path": "scripts"
+    },
+    {
+      "name": "app-project",
+      "path": "."
+    }
+  ],
+  "settings": {}
+}
