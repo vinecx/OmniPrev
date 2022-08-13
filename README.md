@@ -1,6 +1,6 @@
 # Base React Native - Aplicativo
 
-<img src="https://img.shields.io/static/v1?label=react native&message=Controle de Desperdicios&color=orange&style=for-the-badge&logo=REACT"/>
+<img src="https://img.shields.io/static/v1?label=react native&message=OmniPrev&color=orange&style=for-the-badge&logo=REACT"/>
 
 # Tópicos
 
