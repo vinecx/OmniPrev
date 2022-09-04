@@ -6,15 +6,14 @@ export const Row = styled.View`
 `;
 
 export const CardContainer = styled.View.attrs({
-  elevation: 20,
+  elevation: 15,
   shadowColor: 'hsla(0, 0%, 0%, 0.2)',
 })`
   margin: auto 0px;
-  padding: 40px 30px;
-  display: flex;
+  padding: 40px 35px;
   justify-content: center;
   background-color: white;
-  border-radius: 40;
+  border-radius: 35;
 `;
 
 export const Logo = styled.Image.attrs({

@@ -30,18 +30,15 @@ export const Button: React.FC<IButtonProps> = props => {
       onPressIn={props.onPressIn}
       onPressOut={props.onPressOut}
       onLongPress={props.onLongPress}>
-      <Styled type="row" sm="" lg="" css="align-content: center;">
+      <Styled type="row" css="align-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled
-              sm=""
-              lg=""
-              css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center;">
               {props.leftIcon}
             </Styled>
           </RenderIf>
           <RenderIf condition={!!props.rightIcon}>
-            <Styled sm="" lg="" />
+            <Styled />
           </RenderIf>
         </RenderIf>
 
@@ -59,8 +56,6 @@ export const Button: React.FC<IButtonProps> = props => {
           <RenderIf condition={!!props.loading}>
             <Styled
               type="none"
-              sm=""
-              lg=""
               css="align-content: center; justify-content: center;">
               <ActivityIndicator animating color={Style.cleanColor} />
             </Styled>
@@ -69,13 +64,10 @@ export const Button: React.FC<IButtonProps> = props => {
 
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled sm="" lg="" />
+            <Styled />
           </RenderIf>
           <RenderIf condition={!props.loading && !!props.rightIcon}>
-            <Styled
-              sm=""
-              lg=""
-              css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center;">
               {props.rightIcon}
             </Styled>
           </RenderIf>
@@ -93,18 +85,15 @@ export const ButtonOutline: React.FC<IButtonProps> = props => {
       onPressIn={props.onPressIn}
       onPressOut={props.onPressOut}
       onLongPress={props.onLongPress}>
-      <Styled type="row" sm="" lg="" css="align-content: center;">
+      <Styled type="row" css="align-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled
-              sm=""
-              lg=""
-              css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center; position: absolute; top: 25%; bottom: 25%;">
               {props.leftIcon}
             </Styled>
           </RenderIf>
           <RenderIf condition={!!props.rightIcon}>
-            <Styled sm="" lg="" />
+            <Styled />
           </RenderIf>
         </RenderIf>
 
@@ -127,13 +116,10 @@ export const ButtonOutline: React.FC<IButtonProps> = props => {
 
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled sm="" lg="" />
+            <Styled />
           </RenderIf>
           <RenderIf condition={!props.loading && !!props.rightIcon}>
-            <Styled
-              sm=""
-              lg=""
-              css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center;">
               {props.rightIcon}
             </Styled>
           </RenderIf>
@@ -151,17 +137,10 @@ export const ButtonText: React.FC<IButtonProps> = props => {
       onPressIn={props.onPressIn}
       onPressOut={props.onPressOut}
       onLongPress={props.onLongPress}>
-      <Styled
-        type="row"
-        sm=""
-        lg=""
-        css="align-content: center; justify-content: center;">
+      <Styled type="row" css="align-content: center; justify-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled
-              sm=""
-              lg=""
-              css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center; margin-right: 5px;">
               {props.leftIcon}
             </Styled>
           </RenderIf>

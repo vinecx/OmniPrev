@@ -1,43 +1,64 @@
+const mainColor = '#322d5c';
+
+const theme = {
+  mainColor: mainColor,
+  primary: '#534bae',
+  secondary: '#8889cf',
+  darkenPrimary: '#3E3B63',
+  darkenSecondary: '#8079C9',
+
+  lighterPrimary: '#966edf',
+  lighterSecondary: '#eeedff',
+};
+
+const InputStyles = {
+  inputLabelColor: theme.darkenPrimary,
+  inputLabelFocusColor: theme.primary,
+  inputLabelFontSize: '10px',
+  inputLabelFontWeight: 'bold',
+
+  inputBorderRadius: 30,
+  inputBorderWidth: 3,
+  inputFontColor: theme.primary,
+  inputFontColorDisabled: '#a0a0a0',
+  inputPlaceholderColor: '#a0a0a0',
+  inputFontSize: 13,
+  inputFontWeight: 'bold',
+  inputBorderColor: 'transparent',
+  inputHoverBorderColor: theme.primary,
+  inputFocusBorderColor: theme.primary,
+  inputBackgroundColor: '#e7e8eb',
+};
+
+const drawerStyle = {
+  itemFontColor: theme.primary,
+  itemBackgroundColor: theme.secondary,
+};
+
 const Style = {
-  primary: '#152039',
-  secondary: '#2c364c',
+  theme: theme,
   danger: '#dc3545',
   warning: '#ffc107',
   info: '#17a2b8',
 
-  mainColor: '#152039',
-  mainDisabledColor: '#2c364c',
-  mainColorDarker: '#090432',
-  mainColorLighter: '#303068',
+  mainColor: mainColor,
   cleanColor: '#f5f5f5',
   cleanColorDarker: '#eeeeee',
   cleanColorLighter: '#ffffff',
-  inputBorderColor: '#585858',
-  inputHoverBorderColor: '#0c063f',
-  inputFocusBorderColor: '#0c063f',
+
   textError: '#E12',
-  btnFocus: '#cdcdcd',
-  btnHover: '#003aa9',
-  btnActive: '#0c6296',
-  fontColorClear: '#fafafa',
   fontColorDark: '#212121',
   fontSizeSmall: '12px',
   backgroundColorGrey: '#F8F8F8',
   fontSizeDefault: '16px',
-  fontSizeBig: '20px',
-  boxShadowDefault: '0 1px 4px 0 rgba(0, 0, 0, 0.30)',
-  borderRadiusRound: '18px',
-  borderRadiusSquare: '4px',
-  datatableRowColorOdd: '#fafafa',
-  datatableRowColorEven: '#eeeeee',
-  datatableRowColorHighlighted: '#d6d6d6',
-  datatableRowColorSelected: '#bebebe',
-  datatableFooterColorOdd: '#fafafa',
-  datatablefooterColorEven: '#eeeeee',
+
   fontFamilyMulish: 'Mulish',
   fontColorDarkGrey: 'grey',
   fontColorLightGrey: 'hsl(0, 0%, 90%)',
   textSuccess: 'hls(120, 50%, 45%)',
+
+  ...InputStyles,
+  drawer: drawerStyle,
 };
 
 export default Style;

@@ -21,7 +21,7 @@ const LoadingScreen = (props: LoadingProps) => {
         type="container"
         sm="flex-direction: column;"
         lg="flex-direction: row;">
-        <Styled sm="" lg="width: 20%;">
+        <Styled lg="width: 20%;">
           <RenderIf condition={!!logo}>
             <Styled
               type="container"
@@ -35,7 +35,7 @@ const LoadingScreen = (props: LoadingProps) => {
             </Styled>
           </RenderIf>
         </Styled>
-        <Styled sm="" lg="width: 20%; justify-content: center;">
+        <Styled lg="width: 20%; justify-content: center;">
           <RenderIf condition={!!title}>
             <Title styleText="font-size: 20px; justify-content: center;">
               {title}

@@ -1,35 +1,15 @@
-import React, { useState } from 'react';
-import { Button as ButtonPaper } from 'react-native-paper';
-import Modal from '../../shared/components/Modal';
-// Components
-import { Container } from './styles';
+import React from 'react';
+import { Text, Title } from '../../shared/components/commons/Text';
+import { Styled } from '../../shared/utils/LayoutUtils/BaseStyle';
 
 const Main: React.FC = () => {
-  const [modalState, setModalState] = useState<{
-    show: boolean;
-    title?: string;
-    message?: string;
-  }>({
-    show: false,
-  });
-
-  const hideModal = () => {
-    setModalState({ show: false });
-  };
-
   return (
-    <Container>
-      <Modal
-        show={modalState.show}
-        title={modalState.title || ''}
-        message={modalState.message || ''}
-        type="success"
-        onDismiss={hideModal}>
-        <ButtonPaper onPress={hideModal} mode="contained">
-          OK
-        </ButtonPaper>
-      </Modal>
-    </Container>
+    <Styled css="padding: 30px;">
+      <Title variance="primary">Bem vindo ao OmniPrev</Title>
+      <Text variance="darkenSecondary" size="md" fontWeight="300">
+        Acesse o menu lateral para acessar as demais funcionalidades!
+      </Text>
+    </Styled>
   );
 };
 

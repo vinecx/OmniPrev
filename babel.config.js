@@ -19,16 +19,6 @@ module.exports = {
         allowUndefined: true,
       },
     ],
+    'react-native-reanimated/plugin',
   ],
-  env: {
-    production: {
-      plugins: [
-        'babel-plugin-root-import',
-        {
-          rootPathPrefix: 'src',
-          rootPathSuffix: 'src',
-        },
-      ],
-    },
-  },
 };

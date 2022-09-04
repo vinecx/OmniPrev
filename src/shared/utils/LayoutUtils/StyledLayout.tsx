@@ -6,15 +6,22 @@ import {
   PropsStyle,
 } from '../../../shared/components/commons/interface';
 
-export const RootComponentStyle = styled.View<{ styleText: string }>`
+export const RootComponentStyle = styled.View<
+  { styleText: string } & ICommonPropsStyle
+>`
   ${props => props.styleText};
+  ${props => PropsStyle(props)}
 `;
 
-const Collumn = styled(RootComponentStyle)<ICommonPropsStyle>``;
+const Collumn = styled(RootComponentStyle)<ICommonPropsStyle>`
+  ${props => props.styleText};
+  ${props => PropsStyle(props)};
+`;
 
 const Container = styled(RootComponentStyle)<ICommonPropsStyle>`
   ${props => PropsStyle(props)}
-  padding: 24px;
+  ${props => props.styleText};
+  padding: 15px;
 `;
 
 export const KeyboardView = styled.KeyboardAvoidingView.attrs({
@@ -28,6 +35,8 @@ export const KeyboardView = styled.KeyboardAvoidingView.attrs({
 const Row = styled(RootComponentStyle)<ICommonPropsStyle>`
   flex-direction: row;
   padding: 12px 0px;
+
+  ${props => props.styleText};
   ${props => PropsStyle(props)}
 `;
 

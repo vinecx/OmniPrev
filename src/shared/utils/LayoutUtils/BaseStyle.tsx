@@ -1,16 +1,17 @@
 import React from 'react';
-import { ICommonPropsStyle } from 'src/shared/components/commons/interface';
+import { ViewProps } from 'react-native';
+import { ICommonPropsStyle } from '../../../shared/components/commons/interface';
 import { useOrientation } from '../CustomHooks/useOrientation';
 import { Types, TypesNames } from './StyledLayout';
 
 interface PropsStyledCompontent extends ICommonPropsStyle {
   type?: TypesNames;
-  sm: string;
-  lg: string;
+  sm?: string;
+  lg?: string;
   css?: string;
 }
 
-export const Styled: React.FC<PropsStyledCompontent> = props => {
+export const Styled: React.FC<ViewProps & PropsStyledCompontent> = props => {
   const orientation = useOrientation();
 
   const Component = Types[props.type || 'none'].component;
@@ -18,7 +19,8 @@ export const Styled: React.FC<PropsStyledCompontent> = props => {
     <Component
       {...props}
       styleText={
-        (orientation === 'PORTRAIT' ? props.sm : props.lg) + props.css
+        (orientation === 'PORTRAIT' ? props.sm ?? '' : props.lg ?? '') +
+        props.css
       }>
       {props.children}
     </Component>

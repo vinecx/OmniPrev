@@ -5,13 +5,21 @@ export type VarianceColorsType =
   | 'secondary'
   | 'warning'
   | 'info'
-  | 'danger';
+  | 'danger'
+  | 'darkenPrimary'
+  | 'darkenSecondary'
+  | 'lighterPrimary'
+  | 'lighterSecondary';
 export const VarianceColor: Record<VarianceColorsType, string> = {
-  primary: Style.primary,
-  secondary: Style.secondary,
+  primary: Style.theme.primary,
+  secondary: Style.theme.secondary,
   warning: Style.warning,
   danger: Style.danger,
   info: Style.info,
+  darkenPrimary: Style.theme.darkenPrimary,
+  darkenSecondary: Style.theme.darkenSecondary,
+  lighterPrimary: Style.theme.lighterPrimary,
+  lighterSecondary: Style.theme.lighterSecondary,
 };
 
 export const VarianceColors = (variance: VarianceColorsType) =>

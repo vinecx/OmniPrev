@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import Style from '../../../commons/Style';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
@@ -36,7 +37,7 @@ const HeaderButtonDrawer: React.FC<HeaderButtonDrawerProps> = ({
         onPress={() => {
           navigation?.openDrawer();
         }}>
-        <Icon name="menu-fold" size={30} />
+        <Icon name="menu-fold" size={25} color={Style.theme.primary} />
       </ButtonContainer>
 
       {!hideLogo}

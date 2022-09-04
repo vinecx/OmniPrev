@@ -1,23 +1,11 @@
-import { TipAcesso } from './enum';
+import { IUsuario } from './../model/usuario/usuario';
 export interface AuthState {
-  user?: User;
+  user?: IUsuario;
   errors?: string;
   loading: boolean;
-  permission: IPermission;
-}
-
-export interface User {
-  idUsuario: number;
-  desPessoa: string;
-  email: string;
-  indBloqueado: number;
 }
 
 export interface LoginVO {
-  username: string;
+  email: string;
   password: string;
-}
-
-export interface IPermission {
-  tipAcesso?: TipAcesso;
 }

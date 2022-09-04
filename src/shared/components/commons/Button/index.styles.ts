@@ -11,21 +11,21 @@ export interface IPropsButtonStyle extends ICommonPropsStyle {
 }
 
 export const ButtonStyle = styled.TouchableOpacity<IPropsButtonStyle>`
-  ${props => PropsStyle(props)}
-  background-color: ${props => VarianceColors(props.variance)};
-  ${props => VariancesSizes(props.size)}}
-  border-radius: 15px;
+background-color: ${props => VarianceColors(props.variance)};
+${props => VariancesSizes(props.size)}}
+border-radius: 100;
+${props => PropsStyle(props)}
 `;
 
 export const ButtonOutlineStyle = styled.TouchableOpacity<IPropsButtonStyle>`
   ${props => PropsStyle(props)}
   ${props => VariancesSizes(props.size)}}
   border: 1px solid ${props => VarianceColors(props.variance)};
-  border-radius: 15px;
+  border-radius: 100;
+  padding: 0px 20px;
 `;
 
 export const ButtonTextStyle = styled.TouchableOpacity<IPropsButtonStyle>`
   ${props => PropsStyle(props)}
   ${props => VariancesSizes(props.size)}}
-  border-radius: 15px;
 `;

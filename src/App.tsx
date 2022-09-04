@@ -7,6 +7,7 @@ import Style from './commons/Style';
 import Routes from './routes';
 import LoadingScreen from './shared/components/LoadingScreen';
 import ReStatusBar from './shared/components/ReStatusBar';
+import { LogBox } from 'react-native';
 // Modify to add persistor
 import store, { persistor } from './store';
 
@@ -14,6 +15,8 @@ import Middlewares from './Middlewares';
 
 import { StatusBar } from 'react-native';
 import Logo from './assets/logo/full_logo_white.png';
+
+LogBox.ignoreLogs(['warning']);
 
 const App = () => {
   if (__DEV__) {
@@ -27,14 +30,14 @@ const App = () => {
     roundness: 20,
     colors: {
       ...DefaultTheme.colors,
-      primary: Style.mainColor,
-      accent: '#f1c40f',
+      primary: Style.theme.primary,
+      accent: Style.theme.secondary,
     },
   };
 
   const LoadingScreenConf = (
     <>
-      <StatusBar backgroundColor={Style.mainColor}>
+      <StatusBar backgroundColor={Style.mainColor} barStyle="dark-content">
         <LoadingScreen logo={Logo} logoSize={250} />
       </StatusBar>
     </>

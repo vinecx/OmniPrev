@@ -1,85 +1,52 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../../services/api';
-import { TipAcesso } from '../../../shared/@types/auth/enum';
-import {
-  AuthState,
-  IPermission,
-  LoginVO,
-  User,
-} from '../../../shared/@types/auth/types';
-import { IRootState } from './../../index';
+import { AuthState, LoginVO } from '../../../shared/@types/auth/types';
+import { FirebaseErrorMessageByCode } from './../../../shared/@types/auth/Firebase/firebaseMessages';
+import { IUsuario } from './../../../shared/@types/model/usuario/usuario';
 
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
+import database, {
+  FirebaseDatabaseTypes,
+} from '@react-native-firebase/database';
 
 const PREFIX = 'app/auth';
 
-const TOKEN_KEY = '@auth/token';
-
 export const logIn = createAsyncThunk(
   `${PREFIX}/logIn`,
-  async (action: LoginVO, payload) => {
-    if (!action.username || !action.password) {
+  async (action: LoginVO, { rejectWithValue }) => {
+    if (!action.email || !action.password) {
       throw new Error('Usuário e senha são obrigatórios.');
     }
 
-    console.log('Logando');
-    const a = await auth()
-      .signInWithEmailAndPassword(action.username, action.password)
-      .then((x: FirebaseAuthTypes.UserCredential) => console.log(x))
-      .catch((x: FirebaseAuthTypes.NativeFirebaseAuthError) =>
-        console.log('Errro: ', x.message),
-      )
-      .finally(() => console.log('Finaly'));
-    console.log(a);
-
-    const resp = await api.post('/api/authenticate/login', {
-      ...action,
-    });
-
-    if (!resp) {
-      throw new Error('Não foi possivel fazer o login.');
-    }
-    const token = resp.data.id_token;
-    await payload.dispatch(getPermissions());
-
-    return token;
-  },
-);
-
-export const createUser = createAsyncThunk(
-  `${PREFIX}/createUser`,
-  async (action: LoginVO & { name: string }, { dispatch, rejectWithValue }) => {
-    if (!action.username || !action.password) {
-      throw new Error('Usuário e senha são obrigatórios.');
-    }
-
-    const { user, additionalUserInfo } = await auth()
-      .createUserWithEmailAndPassword(action.username, action.password)
+    const { user } = await auth()
+      .signInWithEmailAndPassword(action.email, action.password)
       .catch((x: FirebaseAuthTypes.NativeFirebaseAuthError) => {
-        throw rejectWithValue(x.message);
+        throw rejectWithValue(FirebaseErrorMessageByCode(x.code));
       });
 
-    console.log(user, additionalUserInfo);
-    database()
-      .ref('/users/123')
-      .set({
-        name: 'Ada Lovelace',
-        age: 31,
+    const response = await database()
+      .ref(`/usuarios/${user.uid}`)
+      .once('value')
+      .then<FirebaseDatabaseTypes.DataSnapshot>(x => {
+        if (!x.exists()) {
+          throw rejectWithValue('Usuário não encontrado');
+        }
+        return x;
       })
-      .then(() => console.log('Data set.'));
+      .catch(_ => {
+        console.error(_);
+        throw rejectWithValue(
+          'Erro ao realizar o login, tente novamente mais tarde',
+        );
+      });
 
-    await dispatch(getPermissions());
-
-    return user;
+    return response.val() as IUsuario;
   },
 );
 
-export const logOut = createAsyncThunk(`${PREFIX}/logOut`, async () => {
-  api.defaults.headers.Authorization = '';
-  await AsyncStorage.removeItem(TOKEN_KEY);
-  return '';
+export const logOut = createAsyncThunk(`${PREFIX}/logOut`, async _ => {
+  await auth().signOut();
+  return undefined;
 });
 
 export const getUser = createAsyncThunk(`${PREFIX}/getUser`, async () => {
@@ -90,32 +57,9 @@ export const getUser = createAsyncThunk(`${PREFIX}/getUser`, async () => {
   return response.data;
 });
 
-export const getPermissions = createAsyncThunk(
-  'app/auth/getPermissions',
-  async () => {
-    const response = await api.get<IPermission>('/api/authenticate/permission');
-    return response.data;
-  },
-);
-
-export const hasPermission = createAsyncThunk(
-  `${PREFIX}/hasPermission`,
-  async (_, payload) => {
-    const state = payload.getState() as IRootState;
-    if (
-      state.auth.permission.tipAcesso &&
-      state.auth.permission.tipAcesso !== TipAcesso.FULL_ACCESS
-    ) {
-      payload.dispatch(logOut());
-      throw new Error('Usuário sem permissão de acesso ao aplicativo.');
-    }
-  },
-);
-
 const initialState: AuthState = {
   user: undefined,
   loading: false,
-  permission: {},
 };
 
 const authSlice = createSlice({
@@ -123,47 +67,28 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(getPermissions.fulfilled, (state, action) => {
-      state.permission = action.payload;
-    });
-
     builder.addCase(getUser.fulfilled, (state, action) => {
       state.user = action.payload;
       state.loading = false;
     });
 
+    builder.addCase(logIn.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+
     builder.addCase(logOut.fulfilled, state => {
-      state.user = {} as User;
-    });
-
-    builder.addCase(logIn.rejected, state => {
-      state.errors =
-        'Não foi possível fazer o login. Verifique seu usuário e senha.';
-    });
-
-    builder.addCase(hasPermission.rejected, (state, action) => {
-      state.errors = action.error.message;
+      state.user = undefined;
     });
 
     builder.addMatcher(
-      isAnyOf(
-        logIn.pending,
-        logOut.pending,
-        getUser.pending,
-        getPermissions.pending,
-      ),
+      isAnyOf(logIn.pending, logOut.pending, getUser.pending),
       state => {
         state.loading = true;
       },
     );
 
     builder.addMatcher(
-      isAnyOf(
-        logIn.fulfilled,
-        logOut.fulfilled,
-        getUser.fulfilled,
-        getPermissions.fulfilled,
-      ),
+      isAnyOf(logIn.fulfilled, logOut.fulfilled, getUser.fulfilled),
       state => {
         state.errors = undefined;
         state.loading = false;
@@ -171,15 +96,10 @@ const authSlice = createSlice({
     );
 
     builder.addMatcher(
-      isAnyOf(
-        logIn.rejected,
-        logOut.rejected,
-        getUser.rejected,
-        createUser.rejected,
-      ),
+      isAnyOf(logIn.rejected, logOut.rejected, getUser.rejected),
       (state, payload) => {
-        if (payload.meta.rejectedWithValue) {
-          state.errors = `Erro ao processar solicitação: ${payload.payload}`;
+        if (payload.meta.rejectedWithValue || payload.payload) {
+          state.errors = `${payload.payload}`;
         }
         state.loading = false;
       },

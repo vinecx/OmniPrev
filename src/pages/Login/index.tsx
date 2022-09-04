@@ -1,29 +1,20 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Keyboard, TextInput } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Keyboard } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import Style from '../../commons/Style';
+import LogoOmniPrev from '../../assets/logo/full_logo.png';
 import { AuthState, LoginVO } from '../../shared/@types/auth/types';
-import { Button, ButtonText } from '../../shared/components/commons/Button';
-import { Text, TextError } from '../../shared/components/commons/Text';
-import Input from '../../shared/components/Input';
-import { useOrientation } from '../../shared/utils/CustomHooks/useOrientation';
+import { Button } from '../../shared/components/commons/Button';
+import { TextError } from '../../shared/components/commons/Text';
+import Input, { InputPassword } from '../../shared/components/Input';
 import { Styled } from '../../shared/utils/LayoutUtils/BaseStyle';
 import RenderIf from '../../shared/utils/RenderIf';
 import { IAppDispatch, IRootState } from '../../store/index';
-import {
-  getPermissions,
-  getUser,
-  hasPermission,
-  logIn,
-} from '../../store/modules/auth/authSlice';
+import { logIn } from '../../store/modules/auth/authSlice';
 import { CardContainer, Logo } from './styles';
-import LogoOmniPrev from '../../assets/logo/full_logo.png';
-import { useNavigation } from '@react-navigation/native';
-import { ScreenName } from '../../routes/screens.enum';
 
 export const StackProps = {
   headerTitle: '',
@@ -31,14 +22,16 @@ export const StackProps = {
 };
 
 const schema = Yup.object().shape({
-  username: Yup.string().required('Campo obrigatório'),
+  email: Yup.string()
+    .required('Campo obrigatório')
+    .default('administrador@omniprev.com.br'),
   password: Yup.string()
     .required('Campo obrigatório')
-    .min(6, 'A senha deve conter mais de 6 caracteres'),
+    .min(6, 'A senha deve conter mais de 6 caracteres')
+    .default('OmniPrev456'),
 });
 
 const Login = () => {
-  const passwordRef = useRef<TextInput>(null);
   const dispatch = useDispatch<IAppDispatch>();
   const { loading, errors } = useSelector<IRootState, AuthState>(
     state => state.auth,
@@ -50,153 +43,108 @@ const Login = () => {
     formState: { errors: errorSchema },
     getValues,
   } = useForm({
-    defaultValues: {
-      username: 'cc.vinicius.almeida@gmail.com',
-      password: 'teste',
-    },
+    defaultValues: schema.getDefault(),
     resolver: yupResolver(schema),
   });
-
-  const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const { navigate } = useNavigation();
 
   const handleLogin = async () => {
     Keyboard.dismiss();
 
-    const { username, password } = getValues();
+    const login = getValues();
 
-    const login: LoginVO = { username: username.trim(), password };
-    const response = await dispatch(logIn(login)); // Validação de usuário e senha feita na action
-
-    if (logIn.fulfilled.match(response)) {
-      await dispatch(getPermissions());
-      await dispatch(hasPermission());
-
-      await dispatch(getUser());
-    }
-  };
-
-  const handlePasswordVisibility = () => {
-    if (passwordVisibility) {
-      setPasswordVisibility(false);
-    } else {
-      setPasswordVisibility(true);
-    }
+    await dispatch(logIn(login as LoginVO)); // Validação de usuário e senha feita na action
   };
 
   return (
-    <Styled type="container" sm="" lg="display: flex;" css="flex: 1;">
-      <Styled type="row">
+    <ScrollView
+      keyboardDismissMode="on-drag"
+      contentContainerStyle={{ flex: 1 }}>
+      <Styled type="container" lg="display: flex;" flex={1}>
+        <Styled type="row" sm={''} lg={''}>
+          {/* Logo for landscape mode */}
+          <Styled
+            type="row"
+            sm="display: none;"
+            css="justify-content: center; width: 40%;">
+            <Logo height={190} source={LogoOmniPrev} />
+          </Styled>
 
-        {/* Logo for landscape mode */}
-        <Styled
-          type="row"
-          sm="display: none;"
-          lg=""
-          css="justify-content: center; width: 40%;">
-          <Logo height={190} source={LogoOmniPrev} />
-        </Styled>
+          <Styled
+            sm="width: 100%; height: 100%; margin-bottom: 20%; flex: 1;"
+            lg="width: 50%;"
+            css="align-self: center;">
+            <CardContainer>
+              {/* Logo for portrait mode */}
+              <Styled
+                type="row"
+                lg="display: none;"
+                css="justify-content: center;">
+                <Logo height={190} source={LogoOmniPrev} />
+              </Styled>
 
+              <RenderIf condition={!!errors}>
+                <TextError>{errors}</TextError>
+              </RenderIf>
 
-        <Styled
-          sm="width: 100%; margin-top: 20%; margin-bottom: 20%; flex: 1;"
-          lg="width: 50%;"
-          css="align-self: center;">
-          <CardContainer>
-
-            {/* Logo for portrait mode */}
-            <Styled
-              type="row"
-              sm=""
-              lg="display: none;"
-              css="justify-content: center;">
-              <Logo height={190} source={LogoOmniPrev} />
-            </Styled>
-
-            <RenderIf condition={!!errors}>
-              <TextError>{errors}</TextError>
-            </RenderIf>
-
-            <Controller
-              control={control}
-              name="username"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Email ou Usuário"
-                  value={value}
-                  placeholder="Informe seu email ou usuário..."
-                  inputProps={{
-                    autoCompleteType: 'email',
-                    autoCapitalize: 'none',
-                    autoCorrect: false,
-                    returnKeyType: 'next',
-                    blurOnSubmit: false,
-                    onBlur: onBlur,
-                    enablesReturnKeyAutomatically: true,
-                    onSubmitEditing: () => passwordRef.current?.focus(),
-                  }}
-                  onChangeText={onChange}
-                  helperText={errorSchema.username?.message}
-                  error={!!errorSchema.username?.message}
-                />
-              )}
-            />
-
-            <Styled sm="" lg="" marginBottom={15}>
               <Controller
                 control={control}
-                name="password"
+                name="email"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Senha"
+                    label="Email"
                     value={value}
-                    placeholder="Informe sua senha..."
-                    inputProps={{
-                      autoCapitalize: 'none',
-                      autoCorrect: false,
-                      onBlur: onBlur,
-                      returnKeyType: 'send',
-                      secureTextEntry: !passwordVisibility,
-                      enablesReturnKeyAutomatically: true,
-                      onSubmitEditing: handleLogin,
-                    }}
+                    placeholder="Informe seu email..."
+                    autoCompleteType={'email'}
+                    autoCapitalize={'words'}
+                    autoCorrect={true}
+                    returnKeyType={'next'}
+                    blurOnSubmit={false}
+                    onBlur={onBlur}
+                    enablesReturnKeyAutomatically={true}
                     onChangeText={onChange}
-                    helperText={errorSchema.password?.message}
-                    error={!!errorSchema.password?.message}
+                    helperText={errorSchema.email?.message}
+                    error={!!errorSchema.email?.message}
                   />
                 )}
               />
 
-              <ButtonText
-                onPress={handlePasswordVisibility}
-                title={passwordVisibility ? 'Esconder senha' : 'Mostrar senha'}
+              <Styled marginBottom={15}>
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <InputPassword
+                      label="Senha"
+                      value={value}
+                      placeholder="Informe sua senha..."
+                      autoCapitalize={'none'}
+                      autoCorrect={false}
+                      onBlur={onBlur}
+                      returnKeyType={'send'}
+                      enablesReturnKeyAutomatically={true}
+                      onSubmitEditing={handleLogin}
+                      onChangeText={onChange}
+                      helperText={errorSchema.password?.message}
+                      error={!!errorSchema.password?.message}
+                    />
+                  )}
+                />
+              </Styled>
+
+              <Button
+                width="100%"
+                alignSelf="center"
+                title="Entrar"
+                size="md"
                 variance="primary"
-                size={'sm'}
+                loading={loading}
+                onPress={handleSubmit(handleLogin)}
               />
-            </Styled>
-
-            <Button
-              width="100%"
-              alignSelf="center"
-              title="Entrar"
-              size="md"
-              variance="primary"
-              loading={loading}
-              onPress={handleSubmit(handleLogin)}
-            />
-
-
-
-            <ButtonText
-              onPress={() => navigate(ScreenName.CreateAccount)}
-              title="Criar conta"
-              variance="secondary"
-              size={'sm'}
-            />
-          </CardContainer>
+            </CardContainer>
+          </Styled>
         </Styled>
       </Styled>
-    </Styled>
+    </ScrollView>
   );
 };
 
