@@ -31,7 +31,6 @@ export const cadastrar = async (usuario: IUsuario & Partial<LoginVO>) => {
 
         delete usuario.password;
 
-        console.log(user);
         usuario.id = user.uid;
 
         await database()

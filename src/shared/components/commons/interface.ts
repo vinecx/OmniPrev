@@ -12,10 +12,11 @@ export interface ICommonPropsStyle {
   alignSelf?: FlexAlignType;
   alignTextVertical?: string;
   alignItems?: FlexAlignType;
-  justifyContent?: FlexAlignType;
+  justifyContent?: FlexAlignType | 'space-between';
 
   border?: string;
   borderRadius?: string | number;
+  borderTopRadius?: string | number;
   borderColor?: string;
 
   height?: string | number;
@@ -38,6 +39,16 @@ export const PropsStyle = (style: ICommonPropsStyle) => `
 
   ${style.border ? 'border: ' + style.border : ''};
   ${style.borderRadius ? 'border-radius: ' + style.borderRadius : ''};
+  ${
+    style.borderTopRadius
+      ? 'border-top-left-radius: ' + style.borderTopRadius
+      : ''
+  };
+  ${
+    style.borderTopRadius
+      ? 'border-top-right-radius: ' + style.borderTopRadius
+      : ''
+  };
   ${style.borderColor ? 'border-color: ' + style.borderColor : ''};
   
   

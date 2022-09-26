@@ -79,6 +79,8 @@ const Create = () => {
         `Item ${isEditScreen ? 'salvo' : 'cadastrado'} com sucesso`,
         ToastAndroid.SHORT,
       );
+
+      goBack();
       reset();
     } else {
       ToastAndroid.show(
@@ -106,12 +108,12 @@ const Create = () => {
   };
 
   return (
-    <ScrollView keyboardDismissMode="on-drag">
-      <Styled
-        type="container"
-        lg="display: flex;"
-        css="flex: 1; background-color: white; padding: 0px 20px;"
-        borderRadius={30}>
+    <Styled
+      type="container"
+      lg="display: flex;"
+      css="flex: 1; background-color: white; padding: 0px 20px;"
+      borderTopRadius={30}>
+      <ScrollView keyboardDismissMode="on-drag">
         <Styled
           sm="width: 100%; flex: 1;"
           lg="width: 50%;"
@@ -354,12 +356,12 @@ const Create = () => {
               width="70%"
               variance="primary"
               loading={loading.save}
-              onPress={handleSubmit(submit, console.log)}
+              onPress={handleSubmit(submit)}
             />
           </Styled>
         </Styled>
-      </Styled>
-    </ScrollView>
+      </ScrollView>
+    </Styled>
   );
 };
 

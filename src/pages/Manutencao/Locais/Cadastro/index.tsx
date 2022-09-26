@@ -85,6 +85,7 @@ const Create = () => {
         `Local ${isEditScreen ? 'salvo' : 'cadastrado'} com sucesso`,
         ToastAndroid.SHORT,
       );
+      goBack();
     } else {
       ToastAndroid.show(
         String(errorMessage || 'Houve um erro na solicitação'),
@@ -126,7 +127,7 @@ const Create = () => {
       type="container"
       lg="display: flex;"
       css="flex: 1; background-color: white; height: 100%;"
-      borderRadius={30}>
+      borderTopRadius={30}>
       <ScrollView
         keyboardDismissMode="on-drag"
         contentContainerStyle={{ flex: 1, height: '100%' }}>
@@ -215,19 +216,20 @@ const Create = () => {
             <Text variance="darkenPrimary" fontWeight="900" size="md">
               Lista de subsessões
             </Text>
-            <ButtonText
-              leftIcon={
-                <Icon
-                  size={15}
-                  name="pluscircle"
-                  color={Style.theme.darkenSecondary}
-                />
-              }
-              title="Adicionar"
-              variance="darkenSecondary"
-              size="sm"
-              onPress={() => setOpenModal(true)}
-            />
+
+            <Styled type="row" alignItems="center">
+              <Icon
+                size={15}
+                name="pluscircle"
+                color={Style.theme.darkenSecondary}
+              />
+              <ButtonText
+                title="Adicionar"
+                variance="darkenSecondary"
+                size="sm"
+                onPress={() => setOpenModal(true)}
+              />
+            </Styled>
           </Styled>
           <Text variance="danger" fontWeight="bold">
             {errors.sessoes?.message}

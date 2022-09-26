@@ -1,4 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useNavigationState,
+} from '@react-navigation/native';
 import Style from '../../../commons/Style';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -31,13 +35,31 @@ const HeaderButtonDrawer: React.FC<HeaderButtonDrawerProps> = ({
   hideLogo,
 }) => {
   const navigation = useNavigation();
+
+  const route = useRoute();
   return (
     <Container>
       <ButtonContainer
         onPress={() => {
-          navigation?.openDrawer();
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else {
+            navigation?.openDrawer();
+          }
         }}>
-        <Icon name="menu-fold" size={25} color={Style.theme.primary} />
+        {navigation.canGoBack() ? (
+          <Icon
+            name="arrowleft"
+            size={25}
+            color={Style.theme.lighterSecondary}
+          />
+        ) : (
+          <Icon
+            name="menu-fold"
+            size={25}
+            color={Style.theme.lighterSecondary}
+          />
+        )}
       </ButtonContainer>
 
       {!hideLogo}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Platform,
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
@@ -14,6 +15,7 @@ import styled from 'styled-components/native';
 import Style from '../../../commons/Style';
 import { ICommonPropsStyle, PropsStyle } from '../commons/interface';
 import Icon from 'react-native-vector-icons/Ionicons';
+import RenderIf from '../../../shared/utils/RenderIf';
 
 export interface InputProps extends ICommonPropsStyle {
   hasError?: boolean;
@@ -92,11 +94,12 @@ export const HelperText = styled.Text.attrs({
 `;
 
 export interface IInputProps extends ICommonPropsStyle, TextInputProps {
-  label: string;
+  label?: string;
   placeholder?: string;
   onChangeText: (value: string) => void;
   error?: boolean;
   helperText?: string;
+  inputStyle?: StyleProp;
 }
 
 const Input: React.FC<IInputProps> = props => {
@@ -108,19 +111,25 @@ const Input: React.FC<IInputProps> = props => {
     error,
     helperText,
     editable,
+    inputStyle,
   } = props;
   const [focused, setIsfocused] = useState(false);
 
   return (
     <InputGroup hasError={error ?? false} focus={focused} {...props}>
-      <InputLabel focus={focused} hasError={error ?? false} fontSize={12}>
-        {label}
-      </InputLabel>
+      <RenderIf condition={!!label}>
+        <InputLabel focus={focused} hasError={error ?? false} fontSize={12}>
+          {label}
+        </InputLabel>
+      </RenderIf>
 
       <Row>
         <TextInput
           {...props}
-          style={styles(error ?? false, focused, editable).input}
+          style={{
+            ...styles(error ?? false, focused, editable).input,
+            ...inputStyle,
+          }}
           value={value?.toString()}
           placeholder={placeholder}
           placeholderTextColor={Style.inputPlaceholderColor}

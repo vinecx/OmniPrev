@@ -2,14 +2,23 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import React from 'react';
 import { ScreenName } from '../screens.enum';
 
+const Drawer = createDrawerNavigator();
+
 import Clientes from './clientes';
 import Items from './items';
 import Locais from './locais';
 import Usuarios from './usuarios';
-
-const Drawer = createDrawerNavigator();
+import Preventivas from './preventivas';
 
 export const AdministradorScreens = [
+  <Drawer.Screen
+    name={ScreenName.Preventivas}
+    component={() => <Preventivas />}
+    options={{
+      headerTitle: 'Preventivas',
+      drawerLabel: 'Preventivas',
+    }}
+  />,
   <Drawer.Screen
     name={ScreenName.Usuarios}
     component={() => <Usuarios />}
@@ -30,8 +39,8 @@ export const AdministradorScreens = [
     name={ScreenName.Items}
     component={() => <Items />}
     options={{
-      headerTitle: 'Items',
-      drawerLabel: 'Items',
+      headerTitle: 'Itens',
+      drawerLabel: 'Itens',
     }}
   />,
   <Drawer.Screen

@@ -31,7 +31,7 @@ const App = () => {
     colors: {
       ...DefaultTheme.colors,
       primary: Style.theme.primary,
-      accent: Style.theme.secondary,
+      accent: Style.theme.secondary[40],
     },
   };
 

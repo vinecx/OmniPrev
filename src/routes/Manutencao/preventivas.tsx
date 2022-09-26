@@ -2,9 +2,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { ScreenName } from '../screens.enum';
 
-import Index from '../../pages/Manutencao/Clientes';
-import Cadastro from '../../pages/Manutencao/Clientes/Cadastro';
-
+import Index from '../../pages/PlanoManutencao/Preventivas';
+import Cadastro from '../../pages/PlanoManutencao/Preventivas/Cadastro';
 import Style from '../../commons/Style';
 import HeaderButtonDrawer from '../../shared/components/Headers/MenuDrawerButton';
 
@@ -19,7 +18,7 @@ export const Navigation = () => {
           color: Style.theme.lighterSecondary,
         },
 
-        headerTitle: 'Cadastro de clientes',
+        headerTitle: 'Preventivas',
         headerTitleAlign: 'center',
         headerLeft: () => <HeaderButtonDrawer />,
         headerStyle: {
@@ -31,9 +30,9 @@ export const Navigation = () => {
           backgroundColor: Style.theme.mainColor,
         },
       }}>
-      <Stack.Screen name={ScreenName.Clientes} component={() => <Index />} />
+      <Stack.Screen name={ScreenName.Preventivas} component={() => <Index />} />
       <Stack.Screen
-        name={ScreenName.Cadastro_Clientes}
+        name={ScreenName.Cadastro_Preventivas}
         component={() => <Cadastro />}
       />
     </Stack.Navigator>

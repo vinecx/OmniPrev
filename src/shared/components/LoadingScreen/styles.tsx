@@ -16,7 +16,7 @@ export const Row = styled.View`
 
 export const Title = styled.Text<{ styleText: string }>`
   ${props => props.styleText};
-  color: ${Style.fontColorLightGrey};
+  color: ${Style.backgroundColorGrey};
   font-weight: bold;
 `;
 

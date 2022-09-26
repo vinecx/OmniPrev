@@ -61,3 +61,6 @@ buck-out/
 # ignore list
 .env
 *.test.ts
+
+# firebase services
+google-services.json

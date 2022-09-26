@@ -1,32 +1,35 @@
 import { useNavigation } from '@react-navigation/native';
-import Style from '../../../commons/Style';
+import { format } from 'date-fns/esm';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { FAB } from 'react-native-paper';
+import Style from '../../../commons/Style';
 import { ScreenName } from '../../../routes/screens.enum';
-import { ILocal } from '../../../shared/@types/model/locais/locais';
+import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
 import {
   buscarTodos,
   excluir,
-} from '../../../shared/@types/model/locais/locais.actions';
-import { Button } from '../../../shared/components/commons/Button';
+} from '../../../shared/@types/model/preventivas/preventivas.actions';
+import Input from '../../../shared/components/Input';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 import Listagem from './Listagem';
-import Input from '../../../shared/components/Input';
-import { FAB } from 'react-native-paper';
 
 const Index = () => {
   const { navigate } = useNavigation();
 
   const [filter, setFilter] = useState('');
 
-  const [listagem, setListagem] = useState<ILocal[]>([]);
+  const [listagem, setListagem] = useState<IPreventiva[]>([]);
   const [loading, setLoading] = useState(false);
 
   const listagemFiltered = listagem.filter(
     x =>
-      x.nome.toLowerCase().includes(filter.toLowerCase()) ||
-      x.descricao.toLowerCase().includes(filter.toLowerCase()),
+      (x.data &&
+        format(new Date(x.data), 'dd/MM/yyyy').includes(
+          filter.toLowerCase(),
+        )) ||
+      x.localDesc?.toLowerCase().includes(filter.toLowerCase()),
   );
 
   const busca = async () => {
@@ -48,18 +51,21 @@ const Index = () => {
     busca();
   }, []);
 
-  const edit = async (local: ILocal) => {
-    navigate(ScreenName.Cadastro_Locais as never, local as never);
+  const edit = async (item: IPreventiva) => {
+    navigate(ScreenName.Cadastro_Preventivas as never, item as never);
   };
 
-  const deleteItem = async (local: ILocal) => {
+  const deleteItem = async (item: IPreventiva) => {
     setLoading(true);
 
-    if (local.id) {
-      const { error, errorMessage } = await excluir(local.id); // Validações e cadastro
+    if (item.id) {
+      const { error, errorMessage } = await excluir(item.id); // Validações e cadastro
 
       if (!error) {
-        ToastAndroid.show('Local excluído com sucesso!', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          'Preventiva excluída com sucesso!',
+          ToastAndroid.SHORT,
+        );
         busca();
       } else {
         ToastAndroid.show(
@@ -111,7 +117,7 @@ const Index = () => {
         <FAB
           icon={'plus'}
           onPress={() => {
-            navigate(ScreenName.Cadastro_Locais as never);
+            navigate(ScreenName.Cadastro_Preventivas as never);
           }}
         />
       </Styled>
