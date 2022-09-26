@@ -4,74 +4,77 @@ import { Text, Title } from '../../../../shared/components/commons/Text';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 
 import { TouchableOpacity } from 'react-native';
-import { IUsuario } from 'shared/@types/model/usuario/usuario';
-import Style from '../../../../commons/Style';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
-import {
-  TIP_ACTIONS,
-  TIP_USUARIOS_DESCRIPTIONS,
-} from '../../../../shared/enum';
-
 import Loader from '../../../../shared/components/loaders/list.loader';
+import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import { TIP_ACTIONS } from '../../../../shared/enum';
+import { IPreventiva } from '../../../../shared/@types/model/preventivas/preventivas';
+import Style from '../../../../commons/Style';
+import { format } from 'date-fns';
 
 interface IListagemProps {
-  list: IUsuario[];
+  list: IPreventiva[];
   loading: boolean;
-  onDelete: (usuario: IUsuario) => void;
-  onEdit: (usuario: IUsuario) => void;
+  onDeleteClick: (local: IPreventiva) => void;
+  onEditClick: (local: IPreventiva) => void;
 }
 
 const Listagem: React.FC<IListagemProps> = ({
   list,
-  onEdit,
-  onDelete,
+  onDeleteClick,
+  onEditClick,
   loading,
 }) => {
-  const [openUsuarioMenu, setOpenUsuarioMenu] = useState<{
+  const [openMenu, setOpenMenu] = useState<{
     open: boolean;
-    usuarioToEdit?: IUsuario;
+    toEdit?: IPreventiva;
   }>({
     open: false,
   });
 
-  const onEditClick = () => {
-    if (openUsuarioMenu.usuarioToEdit) {
-      onEdit(openUsuarioMenu.usuarioToEdit);
-      setOpenUsuarioMenu({ open: false, usuarioToEdit: undefined });
+  const onEdit = () => {
+    if (openMenu.toEdit) {
+      onEditClick(openMenu.toEdit);
+      setOpenMenu({ open: false, toEdit: undefined });
     }
   };
 
-  const onDeleteClick = () => {
-    if (openUsuarioMenu.usuarioToEdit) {
-      onDelete(openUsuarioMenu.usuarioToEdit);
-      setOpenUsuarioMenu({ open: false, usuarioToEdit: undefined });
+  const onDelete = () => {
+    if (openMenu.toEdit) {
+      onDeleteClick(openMenu.toEdit);
+      setOpenMenu({ open: false, toEdit: undefined });
     }
   };
-
-  //#region Listagem menu e suas funções
 
   const data = [
-    { label: 'Editar', value: TIP_ACTIONS.UPDATE, action: onEditClick },
-    { label: 'Excluir', value: TIP_ACTIONS.DELETE, action: onDeleteClick },
+    { label: 'Editar', value: TIP_ACTIONS.UPDATE, action: onEdit },
+    { label: 'Excluir', value: TIP_ACTIONS.DELETE, action: onDelete },
   ];
 
   type Flatten<T> = T extends any[] ? T[number] : T;
   // Extracts out the element type.
   type TypeItems = Flatten<typeof data>;
 
-  //#endregion
-
   if (loading) {
     return <Loader qtdItems={6} />;
+  }
+
+  const hasItems = list.length > 0;
+
+  if (!hasItems) {
+    return (
+      <Styled type="container" justifyContent="center" alignItems="center">
+        <Text textColor={Style.theme.secondary[60]} alignText="center">
+          Sem items...
+        </Text>
+      </Styled>
+    );
   }
 
   return (
     <Styled marginTop={10} css="flex: 1;">
       <Menu
-        show={openUsuarioMenu.open}
-        onDismiss={() =>
-          setOpenUsuarioMenu({ open: false, usuarioToEdit: undefined })
-        }
+        show={openMenu.open}
+        onDismiss={() => setOpenMenu({ open: false, toEdit: undefined })}
         data={data}
         renderItem={(item: TypeItems) => (
           <MenuItem onClick={item.action}>
@@ -88,30 +91,21 @@ const Listagem: React.FC<IListagemProps> = ({
         <Styled css="width: 100%; flex: 1;">
           {list.map(x => (
             <TouchableOpacity
-              onPress={() =>
-                setOpenUsuarioMenu({ open: true, usuarioToEdit: x })
-              }>
+              onPress={() => setOpenMenu({ open: true, toEdit: x })}>
               <Styled
                 type="row"
                 marginTop={10}
                 paddingLeft={15}
                 paddingRight={15}
                 css="border-radius: 20; background-color: white; display: flex; align-items: flex-start; justify-content: space-between;">
-                <Styled>
+                <Styled width="95%">
                   <Text fontSize={16} fontWeight="bold" variance="primary">
-                    {x.nome}
+                    {x.data
+                      ? format(new Date(x.data), 'dd/MM/yyyy')
+                      : 'Não informado'}
                   </Text>
                   <Text fontSize={12} fontWeight="400" variance="secondary">
-                    {x.cpf}
-                  </Text>
-                </Styled>
-
-                <Styled
-                  css="border-radius: 100px; padding: 3px 10px;"
-                  backgroundColor={Style.theme.secondary[50]}
-                  marginLeft={15}>
-                  <Text fontSize={10} fontWeight="bold" textColor="white">
-                    {TIP_USUARIOS_DESCRIPTIONS[x.tipUsuario]}
+                    {x.localDesc}
                   </Text>
                 </Styled>
               </Styled>

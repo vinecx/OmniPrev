@@ -137,6 +137,8 @@ const Create = () => {
         `Usuário ${isEditScreen ? 'salvo' : 'cadastrado'} com sucesso`,
         ToastAndroid.SHORT,
       );
+
+      goBack();
     } else {
       ToastAndroid.show(
         String(errorMessage || 'Houve um erro na solicitação'),
@@ -164,7 +166,7 @@ const Create = () => {
       type="container"
       lg="display: flex;"
       css="flex: 1; background-color: white;"
-      borderRadius={30}>
+      borderTopRadius={30}>
       <ScrollView keyboardDismissMode="on-drag">
         <Styled
           sm="width: 100%; flex: 1;"

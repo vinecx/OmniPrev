@@ -9,7 +9,6 @@ const isPortrait = () => {
     const dim = Dimensions.get('screen');
     return (dim.height || 0) >= (dim.width || 0);
   } catch (exception) {
-    console.error(exception);
     return true;
   }
 };

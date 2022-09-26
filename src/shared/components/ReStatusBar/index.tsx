@@ -4,7 +4,7 @@ import { StatusBar } from 'react-native';
 const ReStatusBar = () => {
   return (
     <StatusBar
-      barStyle="dark-content"
+      barStyle="light-content"
       animated
       networkActivityIndicatorVisible
       translucent

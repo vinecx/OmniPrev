@@ -103,7 +103,7 @@ const Listagem: React.FC<IListagemProps> = ({
                 <RenderIf condition={!!x.fabricante}>
                   <Styled
                     css="border-radius: 100px; padding: 3px 10px;"
-                    backgroundColor={Style.theme.secondary}
+                    backgroundColor={Style.theme.secondary[50]}
                     marginLeft={15}>
                     <Text fontSize={10} fontWeight="bold" textColor="white">
                       {x.fabricante}

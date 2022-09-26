@@ -59,7 +59,7 @@ const Login = () => {
     <ScrollView
       keyboardDismissMode="on-drag"
       contentContainerStyle={{ flex: 1 }}>
-      <Styled type="container" lg="display: flex;" flex={1}>
+      <Styled lg="display: flex;" flex={1}>
         <Styled type="row" sm={''} lg={''}>
           {/* Logo for landscape mode */}
           <Styled
@@ -79,7 +79,7 @@ const Login = () => {
                 type="row"
                 lg="display: none;"
                 css="justify-content: center;">
-                <Logo height={190} source={LogoOmniPrev} />
+                <Logo height={170} source={LogoOmniPrev} />
               </Styled>
 
               <RenderIf condition={!!errors}>

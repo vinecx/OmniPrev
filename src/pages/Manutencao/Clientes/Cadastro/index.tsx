@@ -26,7 +26,7 @@ const schema: SchemaOf<ICliente> = object().shape({
   CNPJ: string().required('Campo obrigatório'),
   nomeFantasia: string().required('Campo obrigatório'),
   razaoSocial: string().required('Campo obrigatório'),
-  ativo: boolean().required('Campo obrigatório'),
+  ativo: boolean().required('Campo obrigatório').default(true),
   telefone: string().required('Campo obrigatório'),
   endereco: object().shape({
     bairro: string().required('Campo obrigatório'),
@@ -47,12 +47,6 @@ const schema: SchemaOf<ICliente> = object().shape({
   }),
 });
 
-const defaultValues = {
-  endereco: {
-    cidade: '',
-  } as IEndereco,
-} as InferType<typeof schema>;
-
 const Create = () => {
   const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -65,7 +59,7 @@ const Create = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const { control, handleSubmit, formState, setValue } = useForm({
-    defaultValues: (cliente as ICliente) ?? defaultValues,
+    defaultValues: (cliente as ICliente) ?? schema.getDefault(),
     resolver: yupResolver(schema),
   });
 
@@ -95,6 +89,7 @@ const Create = () => {
         `Cliente ${isEditScreen ? 'atualizado' : 'cadastrado'} com sucesso`,
         ToastAndroid.SHORT,
       );
+      goBack();
     } else {
       ToastAndroid.show(
         String(errorMessage || 'Houve um erro na solicitação'),
@@ -106,12 +101,12 @@ const Create = () => {
   };
 
   return (
-    <ScrollView keyboardDismissMode="on-drag">
-      <Styled
-        type="container"
-        lg="display: flex;"
-        css="flex: 1; background-color: white;"
-        borderRadius={30}>
+    <Styled
+      type="container"
+      lg="display: flex;"
+      css="flex: 1; background-color: white;"
+      borderTopRadius={30}>
+      <ScrollView keyboardDismissMode="on-drag">
         <Styled
           sm="width: 100%; flex: 1;"
           lg="width: 50%;"
@@ -123,7 +118,7 @@ const Create = () => {
           <Menu
             show={openModal}
             onDismiss={() => setOpenModal(false)}
-            title="Usuário ativo?"
+            title="Status do cliente:"
             data={data}
             subtitle="Selecione uma opção"
             renderItem={(item: TypeItems) => (
@@ -255,12 +250,6 @@ const Create = () => {
           <Title variance="primary" size="lg" marginTop={40} width="65%">
             Informação sobre a estrutura
           </Title>
-
-          <DateTimePicker
-            isVisible={showDatePicker}
-            onConfirm={date => setValue('dataConstrucao', new Date(date))}
-            onCancel={() => setShowDatePicker(false)}
-          />
 
           <Controller
             control={control}
@@ -407,13 +396,7 @@ const Create = () => {
                 keyboardType={'numeric'}
                 onBlur={onBlur}
                 enablesReturnKeyAutomatically={true}
-                onChangeText={val =>
-                  onChange(
-                    val
-                      .replace(/\D/g, '')
-                      .replace(/^(\d{2})(\d{2})(\d{4})+$/, '$1/$2/$3'),
-                  )
-                }
+                onChangeText={onChange}
                 helperText={errorSchema.estrutura?.numeroUnidades?.message}
                 error={!!errorSchema.estrutura?.numeroUnidades?.message}
               />
@@ -433,13 +416,7 @@ const Create = () => {
                 keyboardType={'numeric'}
                 onBlur={onBlur}
                 enablesReturnKeyAutomatically={true}
-                onChangeText={val =>
-                  onChange(
-                    val
-                      .replace(/\D/g, '')
-                      .replace(/^(\d{2})(\d{2})(\d{4})+$/, '$1/$2/$3'),
-                  )
-                }
+                onChangeText={onChange}
                 helperText={errorSchema.estrutura?.inventario?.message}
                 error={!!errorSchema.estrutura?.inventario?.message}
               />
@@ -591,7 +568,7 @@ const Create = () => {
             render={({ field: { value } }) => (
               <TouchableOpacity onPress={() => setOpenModal(true)}>
                 <InputLabel fontSize={12} focus={false}>
-                  Ativo
+                  Status do cliente
                 </InputLabel>
 
                 <Styled
@@ -605,7 +582,7 @@ const Create = () => {
                     fontSize={15}
                     marginLeft={15}
                     fontWeight="bold">
-                    {value ? 'Ativado' : 'Desativado'}
+                    {value ? 'Ativo' : 'Desativado'}
                   </Text>
                 </Styled>
               </TouchableOpacity>
@@ -627,12 +604,12 @@ const Create = () => {
               width="70%"
               variance="primary"
               loading={loading}
-              onPress={handleSubmit(submit, console.log)}
+              onPress={handleSubmit(submit)}
             />
           </Styled>
         </Styled>
-      </Styled>
-    </ScrollView>
+      </ScrollView>
+    </Styled>
   );
 };
 

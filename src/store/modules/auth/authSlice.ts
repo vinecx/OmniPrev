@@ -34,7 +34,6 @@ export const logIn = createAsyncThunk(
         return x;
       })
       .catch(_ => {
-        console.error(_);
         throw rejectWithValue(
           'Erro ao realizar o login, tente novamente mais tarde',
         );

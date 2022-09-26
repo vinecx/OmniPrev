@@ -3,12 +3,42 @@ const mainColor = '#322d5c';
 const theme = {
   mainColor: mainColor,
   primary: '#534bae',
-  secondary: '#8889cf',
+  secondaryColor: '#8889cf',
   darkenPrimary: '#3E3B63',
   darkenSecondary: '#8079C9',
 
   lighterPrimary: '#966edf',
   lighterSecondary: '#eeedff',
+
+  secondary: {
+    0: '#000000',
+    10: '#1D192B',
+    20: '#332D41',
+    30: '#4A4458',
+    40: '#625B71',
+    50: '#7A7289',
+    60: '#958DA5',
+    70: '#B0A7C0',
+    80: '#CCC2DC',
+    90: '#E8DEF8',
+    95: '#F6EDFF',
+    99: '#FFFBFE',
+  },
+
+  error: {
+    0: '#000000',
+    10: '#410E0B',
+    20: '#601410',
+    30: '#8C1D18',
+    40: '#B3261E',
+    50: '#DC362E',
+    60: '#E46962',
+    70: '#EC928E',
+    80: '#F2B8B5',
+    90: '#F9DEDC',
+    95: '#FCEEEE',
+    99: '#FFFBF9',
+  },
 };
 
 const InputStyles = {
@@ -32,7 +62,7 @@ const InputStyles = {
 
 const drawerStyle = {
   itemFontColor: theme.primary,
-  itemBackgroundColor: theme.secondary,
+  itemBackgroundColor: theme.secondary[40],
 };
 
 const Style = {
@@ -54,7 +84,7 @@ const Style = {
 
   fontFamilyMulish: 'Mulish',
   fontColorDarkGrey: 'grey',
-  fontColorLightGrey: 'hsl(0, 0%, 90%)',
+  backgroundColorGrey: 'hsl(0, 0%, 90%)',
   textSuccess: 'hls(120, 50%, 45%)',
 
   ...InputStyles,

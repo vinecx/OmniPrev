@@ -33,7 +33,7 @@ export const Button: React.FC<IButtonProps> = props => {
       <Styled type="row" css="align-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled css="align-content: center; justify-content: center;">
+            <Styled css="align-content: center; justify-content: center; position: absolute; top: 25%; bottom: 25%; left: 15px;">
               {props.leftIcon}
             </Styled>
           </RenderIf>
@@ -47,9 +47,9 @@ export const Button: React.FC<IButtonProps> = props => {
           alignText="center"
           marginLeft="auto"
           marginRight="auto"
-          alignTextVertical="center"
-          fontWeight="bold"
-          textColor={Style.cleanColor}>
+          alignTextVertical={props.alignTextVertical ?? 'center'}
+          fontWeight={props.fontWeight ?? 'bold'}
+          textColor={props.textColor ?? Style.cleanColor}>
           <RenderIf condition={!!props.title && !props.loading}>
             {props.title}
           </RenderIf>
@@ -88,7 +88,7 @@ export const ButtonOutline: React.FC<IButtonProps> = props => {
       <Styled type="row" css="align-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled css="align-content: center; justify-content: center; position: absolute; top: 25%; bottom: 25%;">
+            <Styled css="align-content: center; justify-content: center; position: absolute; top: 25%; bottom: 25%; left: 15px;">
               {props.leftIcon}
             </Styled>
           </RenderIf>
@@ -140,7 +140,7 @@ export const ButtonText: React.FC<IButtonProps> = props => {
       <Styled type="row" css="align-content: center; justify-content: center;">
         <RenderIf condition={!props.loading}>
           <RenderIf condition={!!props.leftIcon}>
-            <Styled css="align-content: center; justify-content: center; margin-right: 5px;">
+            <Styled css="align-content: center; justify-content: center; position: absolute; top: 25%; bottom: 25%; left: 15px;">
               {props.leftIcon}
             </Styled>
           </RenderIf>

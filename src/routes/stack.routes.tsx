@@ -52,19 +52,27 @@ export const Navigation = () => {
         },
         drawerActiveBackgroundColor: Style.drawer.itemBackgroundColor,
         drawerType: 'slide',
+
         headerTitleStyle: {
           fontSize: 18,
-          color: Style.theme.primary,
+          color: Style.theme.lighterSecondary,
         },
 
         headerTitleAlign: 'center',
         headerLeft: () => <HeaderButtonDrawer />,
         headerStyle: {
-          backgroundColor: 'transparent',
+          backgroundColor: Style.theme.mainColor,
           elevation: 0,
         },
+        sceneContainerStyle: {
+          backgroundColor: Style.theme.mainColor,
+        },
+        unmountOnBlur: true,
       }}
-      drawerContent={(props: any) => <DrawerMenu {...props} />}>
+      drawerContent={(props: any) => <DrawerMenu {...props} />}
+      defaultScreenOptions={{
+        unmountOnBlur: true,
+      }}>
       <Drawer.Screen
         name={ScreenName.InitialPage}
         component={Main}
@@ -75,7 +83,12 @@ export const Navigation = () => {
         }}
       />
 
-      {AdministradorScreens.map(screens => screens)}
+      <Drawer.Group
+        screenOptions={{
+          headerShown: false,
+        }}>
+        {AdministradorScreens}
+      </Drawer.Group>
     </Drawer.Navigator>
   );
 };

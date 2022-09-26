@@ -12,7 +12,7 @@ export type VarianceColorsType =
   | 'lighterSecondary';
 export const VarianceColor: Record<VarianceColorsType, string> = {
   primary: Style.theme.primary,
-  secondary: Style.theme.secondary,
+  secondary: Style.theme.secondary[40],
   warning: Style.warning,
   danger: Style.danger,
   info: Style.info,

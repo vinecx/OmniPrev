@@ -123,7 +123,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
                 <Styled
                   css="border-radius: 100px; padding: 3px 10px;"
-                  backgroundColor={Style.theme.secondary}
+                  backgroundColor={Style.theme.secondaryColor[50]}
                   marginLeft={15}>
                   <Text fontSize={10} fontWeight="bold" textColor="white">
                     {x.ativo ? 'Ativado' : 'Desativado'}

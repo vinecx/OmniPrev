@@ -9,10 +9,10 @@ export const CardContainer = styled.View.attrs({
   elevation: 15,
   shadowColor: 'hsla(0, 0%, 0%, 0.2)',
 })`
-  margin: auto 0px;
-  padding: 40px 35px;
+  margin: auto 20px;
+  padding: 45px 20px;
   justify-content: center;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 35;
 `;
 
