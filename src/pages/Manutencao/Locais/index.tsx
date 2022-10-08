@@ -5,10 +5,7 @@ import { RefreshControl, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ScreenName } from '../../../routes/screens.enum';
 import { ILocal } from '../../../shared/@types/model/locais/locais';
-import {
-  buscarTodos,
-  excluir,
-} from '../../../shared/@types/model/locais/locais.actions';
+import LocaisActions from '../../../shared/@types/model/locais/locais.actions';
 import { Button } from '../../../shared/components/commons/Button';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 import Listagem from './Listagem';
@@ -17,6 +14,8 @@ import { FAB } from 'react-native-paper';
 
 const Index = () => {
   const { navigate } = useNavigation();
+
+  const locaisActions = new LocaisActions();
 
   const [filter, setFilter] = useState('');
 
@@ -31,7 +30,7 @@ const Index = () => {
 
   const busca = async () => {
     setLoading(true);
-    const { error, errorMessage, data } = await buscarTodos(); // Validações e cadastro
+    const { error, errorMessage, data } = await locaisActions.buscarTodos(); // Validações e cadastro
 
     if (!error) {
       setListagem(data);
@@ -56,7 +55,7 @@ const Index = () => {
     setLoading(true);
 
     if (local.id) {
-      const { error, errorMessage } = await excluir(local.id); // Validações e cadastro
+      const { error, errorMessage } = await locaisActions.excluir(local.id); // Validações e cadastro
 
       if (!error) {
         ToastAndroid.show('Local excluído com sucesso!', ToastAndroid.SHORT);

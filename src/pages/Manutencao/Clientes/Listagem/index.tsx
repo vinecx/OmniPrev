@@ -6,7 +6,7 @@ import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 import { TouchableOpacity, View } from 'react-native';
 import { ICliente } from 'shared/@types/model/clientes/clientes';
 import Style from '../../../../commons/Style';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { TIP_ACTIONS } from '../../../../shared/enum';
 
 import Loader from '../../../../shared/components/loaders/list.loader';
@@ -64,7 +64,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
   return (
     <Styled marginTop={10} css="flex: 1;">
-      <Menu
+      <BottomSheet
         show={openClienteMenu.open}
         onDismiss={() =>
           setOpenClienteMenu({ open: false, clienteToEdit: undefined })

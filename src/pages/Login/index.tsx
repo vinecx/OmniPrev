@@ -16,13 +16,9 @@ import { IAppDispatch, IRootState } from '../../store/index';
 import { logIn } from '../../store/modules/auth/authSlice';
 import { CardContainer, Logo } from './styles';
 
-export const StackProps = {
-  headerTitle: '',
-  headerTransparent: true,
-};
-
 const schema = Yup.object().shape({
   email: Yup.string()
+    .email('Formato inválido')
     .required('Campo obrigatório')
     .default('administrador@omniprev.com.br'),
   password: Yup.string()

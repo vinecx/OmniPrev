@@ -6,16 +6,17 @@ import { Keyboard, ToastAndroid, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { IItem } from 'shared/@types/model/item/item';
 import { ILocal } from 'shared/@types/model/locais/locais';
+import LocaisActions from '../../../../shared/@types/model/locais/locais.actions';
 import * as Yup from 'yup';
-import { cadastrar } from '../../../../shared/@types/model/item/item.actions';
+import ItensActions from '../../../../shared/@types/model/item/item.actions';
 
-import { buscarTodos } from '../../../../shared/@types/model/locais/locais.actions';
 import { Button } from '../../../../shared/components/commons/Button';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import Input from '../../../../shared/components/Input';
 import ListLoader from '../../../../shared/components/loaders/list.loader';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
+import Style from '../../../../commons/Style';
 
 const schema: Yup.SchemaOf<IItem> = Yup.object().shape({
   id: Yup.string().strip(),
@@ -39,6 +40,10 @@ const Create = () => {
     elementosSearch: false,
     save: false,
   });
+
+  const itensActions = new ItensActions();
+  const locaisActions = new LocaisActions();
+
   const [elementosToSelect, setElementosToSelect] = useState<ILocal[]>([]);
   const [openModal, setOpenModal] = useState(false);
 
@@ -54,7 +59,7 @@ const Create = () => {
     getValues,
     setValue,
     reset,
-  } = useForm({
+  } = useForm<Yup.TypeOf<typeof schema>>({
     defaultValues: schema.getDefaultFromShape(),
     resolver: yupResolver(schema),
   });
@@ -72,7 +77,7 @@ const Create = () => {
     const values = getValues();
 
     delete values.elementoDesc;
-    const { error, errorMessage } = await cadastrar(values);
+    const { error, errorMessage } = await itensActions.cadastrar(values);
 
     if (!error) {
       ToastAndroid.show(
@@ -90,10 +95,10 @@ const Create = () => {
     }
   };
 
-  const buscarElementos = async () => {
+  const buscarLocais = async () => {
     setLoading(curr => ({ ...curr, elementosSearch: true }));
 
-    const { error, errorMessage, data } = await buscarTodos();
+    const { error, errorMessage, data } = await locaisActions.buscarTodos();
 
     if (!error && data) {
       setElementosToSelect(data);
@@ -122,7 +127,7 @@ const Create = () => {
             Informação gerais
           </Title>
 
-          <Menu
+          <BottomSheet
             show={openModal}
             onDismiss={() => setOpenModal(false)}
             data={elementosToSelect}
@@ -186,7 +191,7 @@ const Create = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Nome do item"
-                value={value}
+                value={String(value || '')}
                 placeholder="Informe seu nome..."
                 autoCompleteType={'name'}
                 autoCapitalize={'words'}
@@ -208,7 +213,7 @@ const Create = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Descrição"
-                value={value}
+                value={String(value || '')}
                 placeholder="Informe a descrição..."
                 autoCompleteType={'name'}
                 autoCapitalize={'sentences'}
@@ -258,12 +263,15 @@ const Create = () => {
               <TouchableOpacity
                 onPress={() => {
                   setOpenModal(true);
-                  buscarElementos();
+                  buscarLocais();
                 }}>
                 <Input
-                  label="Selecione o elemento"
-                  value={value}
-                  placeholder="Selecione o elemento..."
+                  label="Selecione o local"
+                  value={String(value || '')}
+                  placeholder="Selecione o local..."
+                  inputStyle={{
+                    color: Style.inputFontColor,
+                  }}
                   autoCapitalize={'none'}
                   autoCorrect={false}
                   editable={false}

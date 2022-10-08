@@ -3,10 +3,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ILocal } from 'shared/@types/model/locais/locais';
 import Loader from '../../../../shared/components/loaders/list.loader';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { TIP_ACTIONS } from '../../../../shared/enum';
 
 interface IListagemProps {
@@ -58,7 +58,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
   return (
     <Styled marginTop={10} css="flex: 1;">
-      <Menu
+      <BottomSheet
         show={openMenu.open}
         onDismiss={() => setOpenMenu({ open: false, toEdit: undefined })}
         data={data}

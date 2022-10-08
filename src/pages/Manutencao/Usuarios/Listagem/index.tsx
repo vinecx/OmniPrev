@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 
-import { TouchableOpacity } from 'react-native';
 import { IUsuario } from 'shared/@types/model/usuario/usuario';
 import Style from '../../../../commons/Style';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import {
   TIP_ACTIONS,
   TIP_USUARIOS_DESCRIPTIONS,
@@ -67,7 +66,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
   return (
     <Styled marginTop={10} css="flex: 1;">
-      <Menu
+      <BottomSheet
         show={openUsuarioMenu.open}
         onDismiss={() =>
           setOpenUsuarioMenu({ open: false, usuarioToEdit: undefined })
@@ -97,8 +96,13 @@ const Listagem: React.FC<IListagemProps> = ({
                 paddingLeft={15}
                 paddingRight={15}
                 css="border-radius: 20; background-color: white; display: flex; align-items: flex-start; justify-content: space-between;">
-                <Styled>
-                  <Text fontSize={16} fontWeight="bold" variance="primary">
+                <Styled width="70%">
+                  <Text
+                    fontSize={16}
+                    fontWeight="bold"
+                    variance="primary"
+                    ellipsizeMode="tail"
+                    numberOfLines={2}>
                     {x.nome}
                   </Text>
                   <Text fontSize={12} fontWeight="400" variance="secondary">

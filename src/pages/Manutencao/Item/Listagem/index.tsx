@@ -3,10 +3,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Style from '../../../../commons/Style';
 import { IItem } from '../../../../shared/@types/model/item/item';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { TIP_ACTIONS } from '../../../../shared/enum';
 
 import Loader from '../../../../shared/components/loaders/list.loader';
@@ -65,7 +65,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
   return (
     <Styled marginTop={10} css="flex: 1;">
-      <Menu
+      <BottomSheet
         show={openMenu.open}
         onDismiss={() => setOpenMenu({ open: false, itemToEdit: undefined })}
         data={data}
@@ -92,8 +92,12 @@ const Listagem: React.FC<IListagemProps> = ({
                 paddingRight={15}
                 css="border-radius: 20; background-color: white; display: flex; align-items: flex-start; justify-content: space-between;">
                 <Styled>
-                  <Text fontSize={16} fontWeight="bold" variance="primary">
-                    {x.nome}
+                  <Text
+                    fontSize={16}
+                    fontWeight="bold"
+                    variance="primary"
+                    ellipsizeMode="clip">
+                    {x.codigo} - {x.nome}
                   </Text>
                   <Text fontSize={12} fontWeight="400" variance="secondary">
                     {x.descricao}

@@ -7,10 +7,7 @@ import { FAB } from 'react-native-paper';
 import Style from '../../../commons/Style';
 import { ScreenName } from '../../../routes/screens.enum';
 import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
-import {
-  buscarTodos,
-  excluir,
-} from '../../../shared/@types/model/preventivas/preventivas.actions';
+import PreventivaActions from '../../../shared/@types/model/preventivas/preventivas.actions';
 import Input from '../../../shared/components/Input';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 import Listagem from './Listagem';
@@ -19,6 +16,7 @@ const Index = () => {
   const { navigate } = useNavigation();
 
   const [filter, setFilter] = useState('');
+  const preventivaActions = new PreventivaActions();
 
   const [listagem, setListagem] = useState<IPreventiva[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,16 +32,18 @@ const Index = () => {
 
   const busca = async () => {
     setLoading(true);
-    const { error, errorMessage, data } = await buscarTodos(); // Validações e cadastro
+    try {
+      const { errorMessage, data } = await preventivaActions.buscarTodos(); // Validações e cadastro
 
-    if (!error) {
-      setListagem(data);
-    } else {
-      ToastAndroid.show(
-        String(errorMessage || 'Houve um erro na solicitação'),
-        ToastAndroid.SHORT,
-      );
-    }
+      if (data) {
+        setListagem(data);
+      } else {
+        ToastAndroid.show(
+          String(errorMessage || 'Houve um erro na solicitação'),
+          ToastAndroid.SHORT,
+        );
+      }
+    } catch (exception) {}
     setLoading(false);
   };
 
@@ -56,25 +56,28 @@ const Index = () => {
   };
 
   const deleteItem = async (item: IPreventiva) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    if (item.id) {
-      const { error, errorMessage } = await excluir(item.id); // Validações e cadastro
+      if (item.id) {
+        const { error, errorMessage } = await preventivaActions.excluir(item); // Validações e cadastro
 
-      if (!error) {
-        ToastAndroid.show(
-          'Preventiva excluída com sucesso!',
-          ToastAndroid.SHORT,
-        );
-        busca();
-      } else {
-        ToastAndroid.show(
-          String(errorMessage || 'Houve um erro na solicitação'),
-          ToastAndroid.SHORT,
-        );
+        if (!error) {
+          ToastAndroid.show(
+            'Preventiva excluída com sucesso!',
+            ToastAndroid.SHORT,
+          );
+          busca();
+        } else {
+          ToastAndroid.show(
+            String(errorMessage || 'Houve um erro na solicitação'),
+            ToastAndroid.SHORT,
+          );
+        }
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

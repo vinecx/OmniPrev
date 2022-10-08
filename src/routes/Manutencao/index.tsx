@@ -5,7 +5,7 @@ import { ScreenName } from '../screens.enum';
 const Drawer = createDrawerNavigator();
 
 import Clientes from './clientes';
-import Items from './items';
+import Itens from './items';
 import Locais from './locais';
 import Usuarios from './usuarios';
 import Preventivas from './preventivas';
@@ -36,8 +36,8 @@ export const AdministradorScreens = [
     }}
   />,
   <Drawer.Screen
-    name={ScreenName.Items}
-    component={() => <Items />}
+    name={ScreenName.Itens}
+    component={() => <Itens />}
     options={{
       headerTitle: 'Itens',
       drawerLabel: 'Itens',

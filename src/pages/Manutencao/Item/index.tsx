@@ -1,25 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
-import Style from '../../../commons/Style';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { FAB } from 'react-native-paper';
+import Style from '../../../commons/Style';
 import { ScreenName } from '../../../routes/screens.enum';
 import { IItem } from '../../../shared/@types/model/item/item';
-import {
-  buscarPorCodigo,
-  buscarTodos,
-  excluir,
-} from '../../../shared/@types/model/item/item.actions';
-import { Button } from '../../../shared/components/commons/Button';
+import ItensActions from '../../../shared/@types/model/item/item.actions';
+import Input from '../../../shared/components/Input';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 import Listagem from './Listagem';
-import { FAB } from 'react-native-paper';
-import Input from '../../../shared/components/Input';
 
 const Index = () => {
   const { navigate } = useNavigation();
 
   const [filter, setFilter] = useState('');
+  const itensActions = new ItensActions();
 
   const [listagem, setListagem] = useState<IItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,12 +23,12 @@ const Index = () => {
   const listagemFiltered = listagem.filter(
     x =>
       x.nome.toLowerCase().includes(filter.toLowerCase()) ||
-      x.descricao.toLowerCase().includes(filter.toLowerCase()),
+      x.descricao?.toLowerCase().includes(filter.toLowerCase()),
   );
 
   const buscar = async () => {
     setLoading(true);
-    const { error, errorMessage, data } = await buscarTodos(); // Validações e cadastro
+    const { error, errorMessage, data } = await itensActions.buscarTodos(); // Validações e cadastro
 
     if (!error) {
       setListagem(data);
@@ -50,7 +46,9 @@ const Index = () => {
   }, []);
 
   const editItem = async (codItem: string) => {
-    const { data, error, errorMessage } = await buscarPorCodigo(codItem);
+    const { data, error, errorMessage } = await itensActions.buscarPorCodigo(
+      codItem,
+    );
 
     if (error) {
       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
@@ -63,7 +61,7 @@ const Index = () => {
     setLoading(true);
 
     if (codItem) {
-      const { error, errorMessage } = await excluir(codItem); // Validações e cadastro
+      const { error, errorMessage } = await itensActions.excluir(codItem); // Validações e cadastro
 
       if (!error) {
         ToastAndroid.show('Item excluído com sucesso!', ToastAndroid.SHORT);

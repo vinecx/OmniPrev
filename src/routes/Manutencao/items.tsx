@@ -31,7 +31,7 @@ export const Navigation = () => {
           backgroundColor: Style.theme.mainColor,
         },
       }}>
-      <Stack.Screen name={ScreenName.Items} component={() => <Index />} />
+      <Stack.Screen name={ScreenName.Itens} component={() => <Index />} />
       <Stack.Screen
         name={ScreenName.Cadastro_Items}
         component={() => <Cadastro />}

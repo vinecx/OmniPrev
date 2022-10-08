@@ -2,7 +2,8 @@ export type FirebaseCode =
   | 'auth/too-many-requests'
   | 'auth/user-not-found'
   | 'auth/wrong-password'
-  | 'auth/email-already-in-use';
+  | 'auth/email-already-in-use'
+  | 'auth/invalid-email';
 
 const FirebaseErrorMessageByCodeHandler: Record<FirebaseCode, string> = {
   'auth/too-many-requests':
@@ -10,6 +11,7 @@ const FirebaseErrorMessageByCodeHandler: Record<FirebaseCode, string> = {
   'auth/user-not-found': 'Usuário não encontrado',
   'auth/wrong-password': 'Senha incorreta, informe novamente.',
   'auth/email-already-in-use': 'Usuário já registrado',
+  'auth/invalid-email': 'Email informado inválido',
 };
 
 export const FirebaseErrorMessageByCode = (code: string) => {

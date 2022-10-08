@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  isAnyOf,
+} from '@reduxjs/toolkit';
 import api from '../../../services/api';
 import { AuthState, LoginVO } from '../../../shared/@types/auth/types';
 import { FirebaseErrorMessageByCode } from './../../../shared/@types/auth/Firebase/firebaseMessages';
@@ -8,6 +13,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import database, {
   FirebaseDatabaseTypes,
 } from '@react-native-firebase/database';
+import { ICliente } from 'shared/@types/model/clientes/clientes';
 
 const PREFIX = 'app/auth';
 
@@ -56,6 +62,10 @@ export const getUser = createAsyncThunk(`${PREFIX}/getUser`, async () => {
   return response.data;
 });
 
+export const selectClient = createAction<ICliente | undefined>(
+  `${PREFIX}/selectClient`,
+);
+
 const initialState: AuthState = {
   user: undefined,
   loading: false,
@@ -66,6 +76,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
+    builder.addCase(selectClient, (state, action) => {
+      state.clienteLogado = action.payload;
+    });
+
     builder.addCase(getUser.fulfilled, (state, action) => {
       state.user = action.payload;
       state.loading = false;
@@ -77,6 +91,7 @@ const authSlice = createSlice({
 
     builder.addCase(logOut.fulfilled, state => {
       state.user = undefined;
+      state.clienteLogado = undefined;
     });
 
     builder.addMatcher(

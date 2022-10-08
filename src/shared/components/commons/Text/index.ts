@@ -8,28 +8,30 @@ import { VariancesTextSizes } from './config';
 export interface IPropsTextStyle extends ICommonPropsStyle {
   size?: VarianceSizesType;
   variance?: VarianceColorsType;
+  fontFamily?: string;
 }
 
 export const Text = styled.Text<IPropsTextStyle>`
   ${props => PropsStyle(props)}
   ${props => (props.size ? VariancesTextSizes(props.size) : '')}
   ${props => (props.variance ? 'color: ' + VarianceColors(props.variance) : '')}
+    ${props => (props.fontFamily ? `font-family: ${props.fontFamily}` : '')}
 `;
 
 export const Title = styled.Text<IPropsTextStyle>`
-  font-size: 35;
-  font-weight: bold;
+  font-weight: 600;
   ${props => PropsStyle(props)}
   ${props => (props.size ? VariancesTextSizes(props.size) : '')}
   ${props => (props.variance ? 'color: ' + VarianceColors(props.variance) : '')}
+    ${props => (props.fontFamily ? `font-family: ${props.fontFamily}` : '')}
 `;
 
 export const Subtitle = styled.Text<IPropsTextStyle>`
   font-size: 24;
-  font-weight: bold;
   ${props => PropsStyle(props)}
   ${props => (props.size ? VariancesTextSizes(props.size) : '')}
   ${props => (props.variance ? 'color: ' + VarianceColors(props.variance) : '')}
+    ${props => (props.fontFamily ? `font-family: ${props.fontFamily}` : '')}
 `;
 
 export const Paragraph = styled.Text<IPropsTextStyle>`
@@ -37,6 +39,7 @@ export const Paragraph = styled.Text<IPropsTextStyle>`
   ${props => PropsStyle(props)}
   ${props => (props.size ? VariancesTextSizes(props.size) : '')}
   ${props => (props.variance ? 'color: ' + VarianceColors(props.variance) : '')}
+    ${props => (props.fontFamily ? `font-family: ${props.fontFamily}` : '')}
 `;
 
 export const TextError = styled.Text<IPropsTextStyle>`
@@ -44,4 +47,5 @@ export const TextError = styled.Text<IPropsTextStyle>`
   font-size: 14;
   ${props => PropsStyle(props)}
   ${props => (props.size ? VariancesTextSizes(props.size) : '')}
+    ${props => (props.fontFamily ? `font-family: ${props.fontFamily}` : '')}
 `;

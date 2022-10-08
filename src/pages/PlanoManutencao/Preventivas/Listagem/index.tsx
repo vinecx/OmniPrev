@@ -3,9 +3,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Loader from '../../../../shared/components/loaders/list.loader';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { TIP_ACTIONS } from '../../../../shared/enum';
 import { IPreventiva } from '../../../../shared/@types/model/preventivas/preventivas';
 import Style from '../../../../commons/Style';
@@ -64,7 +64,7 @@ const Listagem: React.FC<IListagemProps> = ({
     return (
       <Styled type="container" justifyContent="center" alignItems="center">
         <Text textColor={Style.theme.secondary[60]} alignText="center">
-          Sem items...
+          Sem itens...
         </Text>
       </Styled>
     );
@@ -72,7 +72,7 @@ const Listagem: React.FC<IListagemProps> = ({
 
   return (
     <Styled marginTop={10} css="flex: 1;">
-      <Menu
+      <BottomSheet
         show={openMenu.open}
         onDismiss={() => setOpenMenu({ open: false, toEdit: undefined })}
         data={data}
@@ -91,6 +91,7 @@ const Listagem: React.FC<IListagemProps> = ({
         <Styled css="width: 100%; flex: 1;">
           {list.map(x => (
             <TouchableOpacity
+              key={x.id}
               onPress={() => setOpenMenu({ open: true, toEdit: x })}>
               <Styled
                 type="row"

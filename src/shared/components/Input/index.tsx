@@ -76,7 +76,6 @@ export const InputLabel = styled.Text<InputProps>`
   font-weight: ${Style.inputLabelFontWeight};
   color: ${props =>
     props.focus ? Style.inputLabelFocusColor : Style.inputLabelColor};
-  font-family: ${Style.fontFamilyMulish};
 
   ${props => PropsStyle(props)}
 `;

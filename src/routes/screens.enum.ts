@@ -1,5 +1,7 @@
 import { TIP_USUARIOS } from 'shared/enum';
 export enum ScreenName {
+  SelectClient = 'app.select_client',
+
   Login = 'app.login',
   InitialPage = 'app.initial_app',
 
@@ -9,41 +11,66 @@ export enum ScreenName {
   Clientes = 'manut.clientes',
   Cadastro_Clientes = 'manut.cad_clientes',
 
-  Items = 'manut.items',
-  Cadastro_Items = 'manut.cad_clientes',
+  Itens = 'manut.itens',
+  Cadastro_Items = 'manut.cad_itens',
 
   Locais = 'manut.locais',
   Cadastro_Locais = 'manut.cad_locais',
 
-  Preventivas = 'manut.preventivas',
-  Cadastro_Preventivas = 'manut.cad_preventivas',
+  // Preventivas
+  Main_preventivas = 'hidden.preventivas',
+  Main_preventivas_tarefas = 'hidden.preventivas_tarefas',
 
-  Corretivas = 'manut.corretivas',
-  Cadastro_Corretivas = 'manut.cad_corretivas',
+  Preventivas = 'plan_manut.preventivas',
+  Cadastro_Preventivas = 'plan_manut.cad_preventivas',
+
+  // Corretivas
+  Corretivas = 'plan_manut.corretivas',
+  Cadastro_Corretivas = 'plan_manut.cad_corretivas',
 }
 
-const essenciais = [ScreenName.Login, ScreenName.InitialPage];
+const essenciais = [
+  ScreenName.Login,
+  ScreenName.InitialPage,
 
-const cadastros = [
+  // preventivas
+  ScreenName.Main_preventivas,
+  ScreenName.Main_preventivas_tarefas,
+
+  ScreenName.Preventivas,
+  ScreenName.Cadastro_Preventivas,
+
+  // Corretivas
+  ScreenName.Corretivas,
+  ScreenName.Cadastro_Corretivas,
+];
+
+const cadastrosAdm = [
   ScreenName.Usuarios,
   ScreenName.Cadastro_Usuarios,
   ScreenName.Clientes,
   ScreenName.Cadastro_Clientes,
-  ScreenName.Items,
+];
+
+const cadastros = [
+  ScreenName.Itens,
   ScreenName.Cadastro_Items,
   ScreenName.Locais,
   ScreenName.Cadastro_Locais,
 ];
 
-export const userScreenBlackListPermissions: Record<
+export const userScreenWhiteListPermissions: Record<
   TIP_USUARIOS,
   ScreenName[]
 > = {
-  '0': [],
-  '1': cadastros,
-  '2': cadastros,
-  '3': [],
+  '0': [...essenciais, ...cadastrosAdm, ...cadastros], // Administrador
+  '1': [...cadastros, ...essenciais], // Síndico
+  '2': [...essenciais], // Zelador
+  '3': [...essenciais, ...cadastros], // Engenheiro
 };
 
-export const hasPermissionToAcess = (screen: ScreenName, tip?: any) =>
-  !userScreenBlackListPermissions[tip as TIP_USUARIOS].includes(screen);
+export const hasPermissionToAcess = (screen: ScreenName, tip?: any) => {
+  return userScreenWhiteListPermissions[tip as TIP_USUARIOS].find(
+    nameScreen => nameScreen === screen,
+  );
+};

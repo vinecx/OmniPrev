@@ -5,16 +5,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { Keyboard, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
-import { ICliente, IEndereco } from 'shared/@types/model/clientes/clientes';
-import { boolean, InferType, number, object, SchemaOf, string } from 'yup';
-import { cadastrarCliente } from '../../../../shared/@types/model/clientes/clientes.actions';
+import { ICliente } from 'shared/@types/model/clientes/clientes';
+import { boolean, number, object, SchemaOf, string } from 'yup';
+import ClienteActions from '../../../../shared/@types/model/clientes/clientes.actions';
 import { Button } from '../../../../shared/components/commons/Button';
 import { Text, Title } from '../../../../shared/components/commons/Text';
 import Input, { InputLabel } from '../../../../shared/components/Input';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
-
-import DateTimePicker from 'react-native-modal-datetime-picker';
 
 export const StackProps = {
   headerTitle: '',
@@ -41,7 +39,6 @@ const schema: SchemaOf<ICliente> = object().shape({
     blocos: number().required('Campo obrigatório.'),
     torres: number().required('Campo obrigatório.'),
     numeroUnidades: number().required('Campo obrigatório.'),
-    inventario: string().required('Campo obrigatório.'),
     dataAssinatura: string().required('Campo obrigatório'),
     dataConstrucao: string().required('Campo obrigatório'),
   }),
@@ -49,8 +46,8 @@ const schema: SchemaOf<ICliente> = object().shape({
 
 const Create = () => {
   const [loading, setLoading] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const clienteActions = new ClienteActions();
   const { goBack } = useNavigation();
   const { params: cliente } = useRoute();
 
@@ -82,7 +79,9 @@ const Create = () => {
     setLoading(true);
     Keyboard.dismiss();
 
-    const { error, errorMessage } = await cadastrarCliente(values); // Validações e cadastro
+    const { error, errorMessage } = await clienteActions.cadastrarCliente(
+      values,
+    ); // Validações e cadastro
 
     if (!error) {
       ToastAndroid.show(
@@ -115,7 +114,7 @@ const Create = () => {
             Informação gerais
           </Title>
 
-          <Menu
+          <BottomSheet
             show={openModal}
             onDismiss={() => setOpenModal(false)}
             title="Status do cliente:"
@@ -399,26 +398,6 @@ const Create = () => {
                 onChangeText={onChange}
                 helperText={errorSchema.estrutura?.numeroUnidades?.message}
                 error={!!errorSchema.estrutura?.numeroUnidades?.message}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="estrutura.inventario"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Inventário"
-                value={String(value || '')}
-                placeholder="Informe o inventário..."
-                returnKeyType={'send'}
-                blurOnSubmit={false}
-                keyboardType={'numeric'}
-                onBlur={onBlur}
-                enablesReturnKeyAutomatically={true}
-                onChangeText={onChange}
-                helperText={errorSchema.estrutura?.inventario?.message}
-                error={!!errorSchema.estrutura?.inventario?.message}
               />
             )}
           />

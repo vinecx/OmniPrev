@@ -5,10 +5,13 @@ const theme = {
   primary: '#534bae',
   secondaryColor: '#8889cf',
   darkenPrimary: '#3E3B63',
+  darkenPrimaryComp: '#F7D514',
   darkenSecondary: '#8079C9',
+  darkenSecondaryComp: '#AB9100',
 
   lighterPrimary: '#966edf',
   lighterSecondary: '#eeedff',
+  lighterSecondaryComp: '#F7D214',
 
   secondary: {
     0: '#000000',
