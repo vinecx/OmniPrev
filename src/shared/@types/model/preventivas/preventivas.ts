@@ -15,5 +15,11 @@ export interface ITarefaPM {
   ambiente: string;
 
   comofazer: string;
-  imagesLink: { path: string }[];
+  imagesLink: ITarefaPMImage[];
+}
+
+export interface ITarefaPMImage {
+  path: string;
+  fileName: string;
+  fileSize: number;
 }

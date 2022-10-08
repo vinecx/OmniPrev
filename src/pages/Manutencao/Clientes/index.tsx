@@ -1,25 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
-import Style from '../../../commons/Style';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Style from '../../../commons/Style';
 
+import { FAB } from 'react-native-paper';
 import { ICliente } from 'shared/@types/model/clientes/clientes';
 import { ScreenName } from '../../../routes/screens.enum';
-import {
-  buscarTodosClientes,
-  excluirCliente,
-} from '../../../shared/@types/model/clientes/clientes.actions';
-import { Button } from '../../../shared/components/commons/Button';
+import ClientesActions from '../../../shared/@types/model/clientes/clientes.actions';
+import Input from '../../../shared/components/Input';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 import Listagem from './Listagem';
-import Input from '../../../shared/components/Input';
-import { FAB } from 'react-native-paper';
 
 const Index = () => {
   const { navigate } = useNavigation();
   const [filter, setFilter] = useState('');
+
+  const clientesActions = new ClientesActions();
 
   const [listagem, setListagem] = useState<ICliente[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +31,8 @@ const Index = () => {
 
   const busca = async () => {
     setLoading(true);
-    const { error, errorMessage, data } = await buscarTodosClientes(); // Validações e cadastro
+    const { error, errorMessage, data } =
+      await clientesActions.buscarTodosClientes(); // Validações e cadastro
 
     if (!error) {
       setListagem(data);
@@ -59,7 +57,9 @@ const Index = () => {
     setLoading(true);
 
     if (cliente.id) {
-      const { error, errorMessage } = await excluirCliente(cliente.id); // Validações e cadastro
+      const { error, errorMessage } = await clientesActions.excluirCliente(
+        cliente.id,
+      ); // Validações e cadastro
 
       if (!error) {
         ToastAndroid.show('Cliente excluído com sucesso!', ToastAndroid.SHORT);

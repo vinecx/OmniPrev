@@ -1,113 +1,153 @@
-import database, {
-  FirebaseDatabaseTypes,
-} from '@react-native-firebase/database';
+import { IRootState } from './../../../../store/index';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 import { nanoid } from 'nanoid/non-secure';
-import { ILocal } from './locais';
+import store from '../../../../store';
+import LocaisActions from '../locais/locais.actions';
 import { IPreventiva } from './preventivas';
-import { buscarPorCodigo as buscarLocalPorCodigo } from '../locais/locais.actions';
 
-export const cadastrar = async (params: IPreventiva) => {
-  if (params.id) {
-    await database()
-      .ref(`/preventivas/${params.id}`)
-      .set(params)
-      .catch(x => {
-        return { error: true, errorMessage: JSON.stringify(x, null, 2) };
-      });
+export default class PreventivaActions {
+  repo = database();
+  clientPath: string = 'preventivas';
+  locais: LocaisActions;
 
-    return { error: false, errorMessage: '' };
-  } else {
-    params.id = nanoid(25);
-    await database()
-      .ref(`/preventivas/${params.id}`)
-      .set(params)
-      .catch(x => {
-        return { error: true, errorMessage: JSON.stringify(x, null, 2) };
-      });
+  constructor() {
+    const state = store.getState() as IRootState;
 
-    return { error: false, errorMessage: '' };
+    if (state.auth.clienteLogado) {
+      this.clientPath = state.auth.clienteLogado.id + '/' + this.clientPath;
+    }
+
+    this.locais = new LocaisActions();
   }
-};
 
-export const editar = async () => {};
+  async cadastrar(params: IPreventiva) {
+    if (params.id) {
+      await this.repo
+        .ref(`/${this.clientPath}/${params.id}`)
+        .set(params)
+        .catch(x => {
+          return { error: true, errorMessage: JSON.stringify(x, null, 2) };
+        });
 
-export const excluir = async (id: string) => {
-  await database()
-    .ref(`/preventivas/${id}`)
-    .remove()
-    .catch(x => {
-      return { error: true, errorMessage: JSON.stringify(x, null, 2) };
+      return { error: false, errorMessage: '' };
+    } else {
+      params.id = nanoid(25);
+      await this.repo
+        .ref(`/${this.clientPath}/${params.id}`)
+        .set(params)
+        .catch(x => {
+          return { error: true, errorMessage: JSON.stringify(x, null, 2) };
+        });
+
+      return { error: false, errorMessage: '' };
+    }
+  }
+
+  async excluir(preventiva: IPreventiva) {
+    // Excluir imagens relacionadas a preventiva
+    preventiva.tarefas?.forEach(tarefa => {
+      tarefa.imagesLink?.forEach(image => {
+        storage().ref(image.fileName).delete();
+      });
     });
 
-  return {
-    error: false,
-    errorMessage: '',
-  };
-};
+    await this.repo
+      .ref(`/${this.clientPath}/${preventiva.id}`)
+      .remove()
+      .catch(x => {
+        return { error: true, errorMessage: JSON.stringify(x, null, 2) };
+      });
 
-export const buscarTodos = async () => {
-  const response = await database()
-    .ref('/preventivas')
-    .once('value')
-    .then(x => {
-      const a = [];
-      x.forEach(y => a.push(y.val()));
-      return a;
-    })
-    .catch(x => {
-      return {
-        error: true,
-        errorMessage: JSON.stringify(x),
-      };
+    return {
+      error: false,
+      errorMessage: '',
+    };
+  }
+
+  async buscarTodos() {
+    return new Promise<{
+      data?: IPreventiva[];
+      error: boolean;
+      errorMessage: string;
+    }>(async (resolve, reject) => {
+      const response = await this.repo
+        .ref(`/${this.clientPath}`)
+        .once('value')
+        .then(preventivas => {
+          const a: IPreventiva[] = [];
+
+          preventivas.forEach(preventiva => {
+            a.push(preventiva.val());
+
+            return false;
+          });
+          return a;
+        })
+        .catch(x => {
+          reject({
+            error: true,
+            errorMessage: JSON.stringify(x),
+          });
+        });
+
+      const preventivas: IPreventiva[] = [];
+
+      await new Promise(resolveInner => {
+        if (Array.isArray(response) && response.length > 0) {
+          response.forEach(async (x: IPreventiva, index) => {
+            let obj = x;
+
+            const { data } = await this.locais.buscarPorCodigo(obj.localId);
+
+            if (data) {
+              obj.localDesc = data.nome;
+            }
+
+            preventivas.push(obj);
+
+            if (index === response.length - 1) {
+              resolveInner(true);
+            }
+          });
+        } else {
+          resolveInner(true);
+        }
+      });
+
+      resolve({
+        error: false,
+        errorMessage: '',
+        data: preventivas,
+      });
     });
+  }
 
-  const preventivas: IPreventiva[] = [];
+  async buscarPorCodigo(codigo: string) {
+    try {
+      const response = await this.repo
+        .ref(`/${this.clientPath}/${codigo}`)
+        .once('value')
+        .then<IPreventiva>(x => x.val())
+        .catch(x => {
+          throw JSON.stringify(x, null, 2);
+        });
 
-  await new Promise(resolve => {
-    response.forEach(async (x: IPreventiva, index) => {
-      let obj = x;
+      const preventiva: IPreventiva = response;
 
-      const { data } = await buscarLocalPorCodigo(obj.localId);
+      const { data } = await this.locais.buscarPorCodigo(response.localId);
 
       if (data) {
-        obj.localDesc = data.descricao;
+        response.localDesc = data.nome;
       }
 
-      preventivas.push(obj);
-
-      if (index === response.length - 1) {
-        resolve(true);
-      }
-    });
-  });
-
-  return {
-    error: false,
-    errorMessage: '',
-    data: preventivas as IPreventiva[],
-  };
-};
-
-export const buscarPorCodigo = async (codigo: string) => {
-  const response = await database()
-    .ref(`/preventivas/${codigo}`)
-    .once('value')
-    .then(x => x.val())
-    .catch(x => {
-      return { error: true, errorMessage: JSON.stringify(x, null, 2) };
-    });
-
-  const preventiva: IPreventiva = response;
-
-  const { data } = await buscarLocalPorCodigo(response.localId);
-
-  if (data) {
-    response.localDesc = data.descricao;
+      return {
+        error: false,
+        errorMessage: '',
+        data: preventiva,
+      };
+    } catch (e) {
+      return { error: true, errorMessage: String(e) };
+    }
   }
-
-  return {
-    error: false,
-    errorMessage: '',
-    data: preventiva,
-  };
-};
+}

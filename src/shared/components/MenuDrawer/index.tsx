@@ -12,7 +12,7 @@ import Style from '../../../commons/Style';
 import { TIP_USUARIOS_DESCRIPTIONS } from '../../enum';
 import { Styled } from '../../utils/LayoutUtils/BaseStyle';
 import { IRootState } from '../../../store';
-import { logOut } from '../../../store/modules/auth/authSlice';
+import { logOut, selectClient } from '../../../store/modules/auth/authSlice';
 import { AuthState } from '../../@types/auth/types';
 import { Button } from '../commons/Button';
 import { Text } from '../commons/Text';
@@ -20,6 +20,7 @@ import { DrawerItem } from './styles';
 import Image from '../../../assets/images/header.jpeg';
 import RenderIf from '../../../shared/utils/RenderIf';
 import { hasPermissionToAcess, ScreenName } from '../../../routes/screens.enum';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 declare type Props = {
   state: DrawerNavigationState<ParamListBase>;
@@ -30,27 +31,35 @@ declare type Props = {
 const ReDrawer: React.FC<Props> = props => {
   const dispatch = useDispatch();
 
-  const { user } = useSelector<IRootState, AuthState>(state => state.auth);
+  const { user, clienteLogado } = useSelector<IRootState, AuthState>(
+    state => state.auth,
+  );
 
   const screens = Object.values(props.descriptors);
   const appScreens = screens.filter(
     x =>
-      x.route.name.includes('app.') &&
+      x.route.name.startsWith('app.') &&
       hasPermissionToAcess(x.route.name as ScreenName, user?.tipUsuario),
   );
   const manutScreens = screens.filter(
     x =>
-      x.route.name.includes('manut.') &&
+      x.route.name.startsWith('manut.') &&
+      hasPermissionToAcess(x.route.name as ScreenName, user?.tipUsuario),
+  );
+  const planManutScreens = screens.filter(
+    x =>
+      x.route.name.startsWith('plan_manut.') &&
       hasPermissionToAcess(x.route.name as ScreenName, user?.tipUsuario),
   );
   const confScreens = screens.filter(
     x =>
-      x.route.name.includes('conf.') &&
+      x.route.name.startsWith('conf.') &&
       hasPermissionToAcess(x.route.name as ScreenName, user?.tipUsuario),
   );
 
-  const hasAppScreens = screens.length > 0;
+  const hasAppScreens = appScreens.length > 0;
   const hasManutScreens = manutScreens.length > 0;
+  const hasPlanManutScreens = planManutScreens.length > 0;
   const hasConfScreens = confScreens.length > 0;
 
   const key = screens[props.state.index].route.key || '';
@@ -66,7 +75,7 @@ const ReDrawer: React.FC<Props> = props => {
           borderBottomRightRadius: 30,
         }}>
         <Styled
-          sm="flex-direction: column; padding: 50px 0px 35px 0px;"
+          sm="flex-direction: column; padding: 40px 0px 15px 0px;"
           lg="flex-direction: row; padding: 20px 0px 0px 25px;"
           alignItems="center"
           css="border-bottom-right-radius: 30; margin: 0;">
@@ -86,11 +95,11 @@ const ReDrawer: React.FC<Props> = props => {
               <Text
                 size="md"
                 textColor={Style.cleanColorLighter}
-                fontWeight="700">
+                fontWeight="bold">
                 Olá, {user?.nome}!
               </Text>
               <Text
-                textColor={Style.theme.secondary[50]}
+                textColor={Style.theme.darkenPrimary}
                 fontWeight="700"
                 backgroundColor={Style.theme.secondary[99]}
                 paddingBottom={2}
@@ -119,6 +128,42 @@ const ReDrawer: React.FC<Props> = props => {
           </Text>
 
           {appScreens.map((x, index) => (
+            <DrawerItem
+              key={index}
+              active={key === x.route.key}
+              onPress={() => props.navigation.navigate(x.route.name)}>
+              <Text
+                textColor={
+                  key === x.route.key ? 'white' : Style.theme.darkenSecondary
+                }
+                fontWeight="600">
+                {x.options.drawerLabel?.toString() || x.route.name}
+              </Text>
+            </DrawerItem>
+          ))}
+        </RenderIf>
+
+        {/* Plano de Manutenção screens */}
+        <RenderIf condition={hasPlanManutScreens}>
+          <Divider
+            style={{
+              height: 1,
+              backgroundColor: Style.theme.lighterSecondary,
+              marginHorizontal: 35,
+              marginVertical: 15,
+            }}
+          />
+
+          <Text
+            fontSize={12}
+            fontWeight="600"
+            variance="primary"
+            marginLeft={25}
+            marginBottom={5}>
+            Plano de manutenção
+          </Text>
+
+          {planManutScreens.map((x, index) => (
             <DrawerItem
               key={index}
               active={key === x.route.key}
@@ -200,20 +245,37 @@ const ReDrawer: React.FC<Props> = props => {
         </RenderIf>
       </ScrollView>
 
-      <Button
-        marginBottom={20}
-        marginLeft={20}
-        marginRight={20}
-        title="Logout"
-        backgroundColor={Style.theme.secondary[40]}
-        textColor={Style.theme.secondary[99]}
-        size={'md'}
-        variance={'primary'}
-        leftIcon={
-          <Icon name="sign-out" size={25} color={Style.theme.secondary[99]} />
-        }
-        onPress={() => dispatch(logOut())}
-      />
+      <Styled css="padding: 5px 20px;">
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(selectClient(undefined));
+          }}>
+          <Styled type="row" alignItems="center" css="margin: 0px 8px;">
+            <Icon name="edit" size={25} color={Style.theme.secondary[30]} />
+            {clienteLogado && (
+              <Text
+                textColor={Style.theme.secondary[40]}
+                marginLeft={10}
+                fontWeight="700">
+                Cliente: {'\n'}
+                {clienteLogado.nomeFantasia}
+              </Text>
+            )}
+          </Styled>
+        </TouchableOpacity>
+        <Button
+          title="Logout"
+          backgroundColor={Style.theme.secondary[70]}
+          textColor={Style.theme.secondary[99]}
+          size={'md'}
+          marginBottom={10}
+          variance={'primary'}
+          leftIcon={
+            <Icon name="sign-out" size={25} color={Style.theme.secondary[99]} />
+          }
+          onPress={() => dispatch(logOut())}
+        />
+      </Styled>
     </View>
   );
 };

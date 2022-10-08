@@ -3,23 +3,27 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Style from '../commons/Style';
-import Login, { StackProps as LoginProps } from '../pages/Login';
-import Main from '../pages/Main';
 import { AuthState } from '../shared/@types/auth/types';
 import HeaderButtonDrawer from '../shared/components/Headers/MenuDrawerButton';
 import DrawerMenu from '../shared/components/MenuDrawer';
+import { useOrientation } from '../shared/utils/CustomHooks/useOrientation';
 import { IRootState } from '../store';
 import { ScreenName } from './screens.enum';
-import { useOrientation } from '../shared/utils/CustomHooks/useOrientation';
 
 // Screens
+import Login from '../pages/Login';
+import Main from '../pages/Main';
+import SelectClient from '../pages/SelecionaCliente';
+import { MainScreens } from './Main';
 import { AdministradorScreens } from './Manutencao/index';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export const Navigation = () => {
-  const { user } = useSelector<IRootState, AuthState>(state => state.auth);
+  const { user, clienteLogado } = useSelector<IRootState, AuthState>(
+    state => state.auth,
+  );
   const orientation = useOrientation();
   const isPortrait = orientation === 'PORTRAIT';
 
@@ -29,7 +33,25 @@ export const Navigation = () => {
         <Stack.Screen
           name={ScreenName.Login}
           component={Login}
-          options={() => LoginProps}
+          options={{
+            headerTitle: '',
+            headerTransparent: true,
+          }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
+  if (clienteLogado === undefined) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name={ScreenName.SelectClient}
+          options={{
+            headerTitle: '',
+            headerTransparent: true,
+          }}
+          component={SelectClient}
         />
       </Stack.Navigator>
     );
@@ -50,6 +72,7 @@ export const Navigation = () => {
         drawerLabelStyle: {
           color: Style.drawer.itemFontColor,
         },
+
         drawerActiveBackgroundColor: Style.drawer.itemBackgroundColor,
         drawerType: 'slide',
 
@@ -57,6 +80,8 @@ export const Navigation = () => {
           fontSize: 18,
           color: Style.theme.lighterSecondary,
         },
+
+        headerTransparent: true,
 
         headerTitleAlign: 'center',
         headerLeft: () => <HeaderButtonDrawer />,
@@ -67,6 +92,7 @@ export const Navigation = () => {
         sceneContainerStyle: {
           backgroundColor: Style.theme.mainColor,
         },
+
         unmountOnBlur: true,
       }}
       drawerContent={(props: any) => <DrawerMenu {...props} />}
@@ -88,6 +114,13 @@ export const Navigation = () => {
           headerShown: false,
         }}>
         {AdministradorScreens}
+      </Drawer.Group>
+
+      <Drawer.Group
+        screenOptions={{
+          headerShown: false,
+        }}>
+        {MainScreens}
       </Drawer.Group>
     </Drawer.Navigator>
   );

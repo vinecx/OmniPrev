@@ -14,7 +14,7 @@ const ListLoader: React.FC<IListLoader> = ({ qtdItems }) => {
         <Styled marginBottom={10} marginTop={10}>
           <ContentLoader
             height={80}
-            backgroundColor={'#E2E2E2'}
+            backgroundColor={'#FFFF'}
             foregroundColor={'#EFEFEF'}
             interval={0}>
             <Rect x="0" y="0" rx="4" ry="4" width="100%" height="200" />

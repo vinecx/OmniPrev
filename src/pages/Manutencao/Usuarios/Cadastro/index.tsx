@@ -22,7 +22,7 @@ import Input, {
   InputLabel,
   InputPassword,
 } from '../../../../shared/components/Input';
-import Menu, { MenuItem } from '../../../../shared/components/Menu';
+import BottomSheet, { MenuItem } from '../../../../shared/components/Menu';
 import { TIP_USUARIOS } from '../../../../shared/enum';
 import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 import RenderIf from '../../../../shared/utils/RenderIf';
@@ -180,7 +180,7 @@ const Create = () => {
             <TextError>{errors}</TextError>
           </RenderIf>
 
-          <Menu
+          <BottomSheet
             show={openModal}
             onDismiss={() => setOpenModal(false)}
             title="Tipo de Usuário"

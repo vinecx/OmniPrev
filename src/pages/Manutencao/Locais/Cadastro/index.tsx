@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { ILocal } from 'shared/@types/model/locais/locais';
 import * as Yup from 'yup';
 import Style from '../../../../commons/Style';
-import { cadastrar } from '../../../../shared/@types/model/locais/locais.actions';
+import LocaisActions from '../../../../shared/@types/model/locais/locais.actions';
 import {
   Button,
   ButtonText,
@@ -19,7 +19,7 @@ import { Styled } from '../../../../shared/utils/LayoutUtils/BaseStyle';
 import ModalLocais from './index.cadastro.locais';
 
 interface ILocalCadastro extends ILocal {
-  cadastroSubSessoes?: {
+  cadastroSubSecoes?: {
     nome?: string;
   };
 }
@@ -28,16 +28,16 @@ const schema: Yup.SchemaOf<ILocalCadastro> = Yup.object({
   id: Yup.string(),
   nome: Yup.string().required('Campo obrigatório'),
   descricao: Yup.string().required('Campo obrigatório'),
-  sessoes: Yup.array()
+  secoes: Yup.array()
     .of(
       Yup.object({
         nome: Yup.string().required('Campo obrigatório'),
       }).required('Campo obrigatório'),
     )
-    .min(1, 'Insira ao menos uma subsessão')
+    .min(1, 'Insira ao menos uma subseção')
     .required('Campo obrigatório'),
 
-  cadastroSubSessoes: Yup.object()
+  cadastroSubSecoes: Yup.object()
     .shape({
       nome: Yup.string(),
     })
@@ -52,6 +52,8 @@ const Create = () => {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const { goBack } = useNavigation();
+
+  const locaisActions = new LocaisActions();
 
   const { params: locais } = useRoute();
   const isEditScreen = !!locais;
@@ -70,7 +72,7 @@ const Create = () => {
   });
 
   const { append, remove, fields } = useFieldArray({
-    name: 'sessoes',
+    name: 'secoes',
     control,
   });
 
@@ -78,7 +80,7 @@ const Create = () => {
     setLoading(true);
     Keyboard.dismiss();
 
-    const { error, errorMessage } = await cadastrar(values);
+    const { error, errorMessage } = await locaisActions.cadastrar(values);
 
     if (!error) {
       ToastAndroid.show(
@@ -96,11 +98,11 @@ const Create = () => {
     setLoading(false);
   };
 
-  const cadastrarSubsessao = () => {
-    const { cadastroSubSessoes } = getValues();
+  const cadastrarSubsecao = () => {
+    const { cadastroSubSecoes } = getValues();
 
-    if (!cadastroSubSessoes || !cadastroSubSessoes.nome) {
-      setError('cadastroSubSessoes.nome', {
+    if (!cadastroSubSecoes || !cadastroSubSecoes.nome) {
+      setError('cadastroSubSecoes.nome', {
         message: 'Cadastre ao menos 1 opção',
       });
 
@@ -108,15 +110,15 @@ const Create = () => {
     }
 
     if (
-      cadastroSubSessoes &&
-      !fields.some(x => x.nome === cadastroSubSessoes.nome)
+      cadastroSubSecoes &&
+      !fields.some(x => x.nome === cadastroSubSecoes.nome)
     ) {
       append({
-        nome: cadastroSubSessoes.nome,
+        nome: cadastroSubSecoes.nome,
       });
-      setValue('cadastroSubSessoes.nome', '');
+      setValue('cadastroSubSecoes.nome', '');
     } else {
-      setError('cadastroSubSessoes.nome', {
+      setError('cadastroSubSecoes.nome', {
         message: 'Já existe essa opção cadastrada',
       });
     }
@@ -135,19 +137,19 @@ const Create = () => {
           sm="width: 100%; flex: 1;"
           lg="width: 50%;"
           css="align-self: center;  height: 100%;">
-          {/* Modal cadastro de subsessoes */}
+          {/* Modal cadastro de subsecoes */}
           <ModalLocais
-            onAddClick={cadastrarSubsessao}
+            onAddClick={cadastrarSubsecao}
             openModal={openModal}
             handleCloseModal={() => setOpenModal(false)}>
             <Controller
               control={control}
-              name="cadastroSubSessoes.nome"
+              name="cadastroSubSecoes.nome"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Nome da subsessão"
+                  label="Nome da subseção"
                   value={value}
-                  placeholder="Informe o nome da subsessão..."
+                  placeholder="Informe o nome da subseção..."
                   autoCompleteType={'name'}
                   autoCapitalize={'sentences'}
                   autoCorrect={true}
@@ -155,10 +157,10 @@ const Create = () => {
                   blurOnSubmit={false}
                   onBlur={onBlur}
                   enablesReturnKeyAutomatically={true}
-                  onSubmitEditing={cadastrarSubsessao}
+                  onSubmitEditing={cadastrarSubsecao}
                   onChangeText={onChange}
-                  helperText={errors.cadastroSubSessoes?.nome?.message}
-                  error={!!errors.cadastroSubSessoes?.nome?.message}
+                  helperText={errors.cadastroSubSecoes?.nome?.message}
+                  error={!!errors.cadastroSubSecoes?.nome?.message}
                 />
               )}
             />
@@ -214,7 +216,7 @@ const Create = () => {
             alignItems="center"
             css="margin: 0px 20px;">
             <Text variance="darkenPrimary" fontWeight="900" size="md">
-              Lista de subsessões
+              Lista de subseções
             </Text>
 
             <Styled type="row" alignItems="center">
@@ -232,7 +234,7 @@ const Create = () => {
             </Styled>
           </Styled>
           <Text variance="danger" fontWeight="bold">
-            {errors.sessoes?.message}
+            {errors.secoes?.message}
           </Text>
 
           <ScrollView>

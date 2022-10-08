@@ -25,6 +25,7 @@ interface IMenuProps {
   subtitle?: string;
   onDismiss: () => void;
   noOptionText?: string;
+  animatedOnOpen?: boolean;
 
   data: any[];
   renderItem: (value: any) => React.ReactFragment;
@@ -38,6 +39,7 @@ const Menu: React.FC<IMenuProps> = ({
   data,
   renderItem,
   noOptionText,
+  animatedOnOpen = true,
 }) => {
   const orientation = useOrientation();
   const isPortrait = orientation === 'PORTRAIT';
@@ -72,7 +74,7 @@ const Menu: React.FC<IMenuProps> = ({
           <TouchableWithoutFeedback>
             <Animated.View
               style={[
-                animatedStyles,
+                animatedOnOpen && animatedStyles,
                 styles.contentContainer,
                 {
                   maxHeight: isPortrait ? '50%' : '90%',
@@ -81,12 +83,12 @@ const Menu: React.FC<IMenuProps> = ({
               ]}
               exiting={SlideOutDown.duration(350)}>
               <RenderIf condition={!!title}>
-                <Title variance="primary" fontSize={30}>
+                <Title variance="primary" fontSize={30} fontWeight="400">
                   {title}
                 </Title>
               </RenderIf>
               <RenderIf condition={!!subtitle}>
-                <Text variance="secondary" marginBottom={25}>
+                <Text variance="secondary" marginBottom={25} fontWeight="300">
                   {subtitle}
                 </Text>
               </RenderIf>

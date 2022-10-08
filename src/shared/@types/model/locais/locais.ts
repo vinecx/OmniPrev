@@ -4,7 +4,7 @@ export interface ILocal {
   nome: string;
   descricao: string;
 
-  sessoes: {
+  secoes: {
     nome: string;
   }[];
 }

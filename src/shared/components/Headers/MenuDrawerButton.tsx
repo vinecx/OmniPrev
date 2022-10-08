@@ -7,6 +7,7 @@ import Style from '../../../commons/Style';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // import { Container } from './styles';
 
@@ -35,11 +36,16 @@ const HeaderButtonDrawer: React.FC<HeaderButtonDrawerProps> = ({
   hideLogo,
 }) => {
   const navigation = useNavigation();
+  const { name } = useRoute();
 
-  const route = useRoute();
+  const isFirstScreen = navigation.getState().routeNames.indexOf(name) === 0;
+
   return (
     <Container>
-      <ButtonContainer
+      <TouchableOpacity
+        style={{
+          marginLeft: 20,
+        }}
         onPress={() => {
           if (navigation.canGoBack()) {
             navigation.goBack();
@@ -60,7 +66,7 @@ const HeaderButtonDrawer: React.FC<HeaderButtonDrawerProps> = ({
             color={Style.theme.lighterSecondary}
           />
         )}
-      </ButtonContainer>
+      </TouchableOpacity>
 
       {!hideLogo}
     </Container>

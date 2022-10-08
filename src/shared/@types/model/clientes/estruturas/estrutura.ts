@@ -3,7 +3,6 @@ export interface IEstrutura {
   blocos: number;
   numeroUnidades: number;
   torres: number;
-  inventario: string;
   dataAssinatura: string;
   dataConstrucao: string;
 }

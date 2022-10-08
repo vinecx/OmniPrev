@@ -12,7 +12,7 @@ export interface ICommonPropsStyle {
   alignSelf?: FlexAlignType;
   alignTextVertical?: string;
   alignItems?: FlexAlignType;
-  justifyContent?: FlexAlignType | 'space-between';
+  justifyContent?: FlexAlignType | 'space-between' | 'space-evenly';
 
   border?: string;
   borderRadius?: string | number;
