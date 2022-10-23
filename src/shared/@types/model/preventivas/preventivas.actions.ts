@@ -1,3 +1,4 @@
+import { formatISOwithTimezone } from './../../../../commons/masks/masks';
 import { IRootState } from './../../../../store/index';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
@@ -73,6 +74,7 @@ export default class PreventivaActions {
     }>(async (resolve, reject) => {
       const response = await this.repo
         .ref(`/${this.clientPath}`)
+        .orderByChild('data')
         .once('value')
         .then(preventivas => {
           const a: IPreventiva[] = [];
@@ -121,6 +123,24 @@ export default class PreventivaActions {
         data: preventivas,
       });
     });
+  }
+
+  async concluirTarefa(
+    idPreventiva: string,
+    idTarefa: number,
+    observacao: String,
+  ) {
+    await this.repo
+      .ref(`/${this.clientPath}/${idPreventiva}/tarefas/${idTarefa}/concluida`)
+      .set({
+        observacao,
+        data: new Date().toLocaleString(),
+      })
+      .catch(x => {
+        return { error: true, errorMessage: JSON.stringify(x, null, 2) };
+      });
+
+    return { error: false, errorMessage: '' };
   }
 
   async buscarPorCodigo(codigo: string) {

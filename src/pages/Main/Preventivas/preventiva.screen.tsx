@@ -5,6 +5,8 @@ import {
   Dimensions,
   StyleSheet,
   Animated,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
@@ -26,13 +28,14 @@ let headerVisible = true;
 const Index: React.FC = () => {
   const preventiva = useRoute().params as IPreventiva | undefined;
 
+  // #region Animations
   const animation = useRef(new Animated.Value(1)).current;
   const translateY = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, headerHeight / 2 - 70],
   });
 
-  const onScroll = e => {
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = e.nativeEvent.contentOffset.y;
 
     if (y > scrollValue && headerVisible && y > headerHeight / 2 - 70) {
@@ -53,6 +56,7 @@ const Index: React.FC = () => {
     }
     scrollValue = y;
   };
+  // #endregion
 
   const { navigate } = useNavigation();
 
@@ -60,6 +64,7 @@ const Index: React.FC = () => {
     return <Text>Nada para carregar</Text>;
   }
 
+  // Get first task image
   let firstImage: string = '';
   const { tarefas } = preventiva;
   const qtdTarefas = tarefas ? tarefas.length : 0;
@@ -78,7 +83,7 @@ const Index: React.FC = () => {
   }
 
   return (
-    <Styled flex={1}>
+    <ScrollView contentContainerStyle={{ flex: 1 }}>
       <Styled height={heightPercentageToDP('40')}>
         <ImageBackground
           blurRadius={10}
@@ -167,23 +172,47 @@ const Index: React.FC = () => {
               fontFamily="Poppins Medium">
               Tarefas:
             </Text>
-            {preventiva.tarefas.map(tarefa => (
+            {preventiva.tarefas.map((tarefa, idxTarefa) => (
               <TouchableOpacity
                 onPress={() =>
-                  navigate(ScreenName.Main_preventivas_tarefas, tarefa)
+                  navigate(
+                    ScreenName.Main_preventivas_tarefas as never,
+                    {
+                      idPreventiva: preventiva.id,
+                      idTarefa: idxTarefa,
+                      tarefa: tarefa,
+                    } as never,
+                  )
                 }>
                 <Styled
-                  type="container"
-                  css="border: 1px; border-radius: 20; margin-bottom: 10px;">
-                  <Text>{tarefa.ambiente}</Text>
-                  <Text>{tarefa.comofazer}</Text>
+                  type="row"
+                  borderColor={Style.theme.secondary[80]}
+                  css="border: 1px; border-radius: 20; margin-bottom: 10px; padding: 10px 15px">
+                  <Styled width="80%">
+                    <Text fontFamily="Poppins SemiBold">{tarefa.ambiente}</Text>
+                    <Text variance="darkenPrimary" fontFamily="Poppins Medium">
+                      {tarefa.comofazer}
+                    </Text>
+                  </Styled>
+                  {tarefa.concluida && (
+                    <Styled marginLeft="auto">
+                      <Text
+                        textColor="white"
+                        fontSize={10}
+                        backgroundColor="green"
+                        fontWeight="500"
+                        style={{ paddingHorizontal: 10, borderRadius: 15 }}>
+                        {tarefa.concluida ? 'Concluida' : 'A fazer'}
+                      </Text>
+                    </Styled>
+                  )}
                 </Styled>
               </TouchableOpacity>
             ))}
           </Styled>
         </ScrollView>
       </Animated.View>
-    </Styled>
+    </ScrollView>
   );
 };
 
