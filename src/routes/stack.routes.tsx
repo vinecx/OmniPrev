@@ -93,11 +93,11 @@ export const Navigation = () => {
           backgroundColor: Style.theme.mainColor,
         },
 
-        unmountOnBlur: true,
+        unmountOnBlur: false,
       }}
       drawerContent={(props: any) => <DrawerMenu {...props} />}
       defaultScreenOptions={{
-        unmountOnBlur: true,
+        unmountOnBlur: false,
       }}>
       <Drawer.Screen
         name={ScreenName.InitialPage}
@@ -116,12 +116,7 @@ export const Navigation = () => {
         {AdministradorScreens}
       </Drawer.Group>
 
-      <Drawer.Group
-        screenOptions={{
-          headerShown: false,
-        }}>
-        {MainScreens}
-      </Drawer.Group>
+      <Drawer.Group>{MainScreens}</Drawer.Group>
     </Drawer.Navigator>
   );
 };

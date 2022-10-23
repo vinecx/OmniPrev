@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { differenceInDays, format, isAfter } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { ImageBackground } from 'react-native';
 import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
@@ -54,6 +54,10 @@ const Index: React.FC = () => {
           }
         }
 
+        const estaAtrasada =
+          Math.sign(differenceInDays(new Date(preventiva.data), new Date())) <
+          0;
+
         return (
           <TouchableOpacity
             onPress={() =>
@@ -64,7 +68,7 @@ const Index: React.FC = () => {
             }>
             <Styled
               type="row"
-              backgroundColor={Style.theme.secondary[90]}
+              backgroundColor={Style.theme.secondary[95]}
               borderRadius={30}
               height={150}
               css="margin: 10px 0px; padding: 0;">
@@ -93,6 +97,20 @@ const Index: React.FC = () => {
                     fontFamily="Poppins Medium">
                     {preventiva.localDesc}
                   </Text>
+                  {estaAtrasada && (
+                    <>
+                      <Text
+                        width={'35%'}
+                        textColor="white"
+                        fontSize={10}
+                        borderRadius={15}
+                        alignText="center"
+                        backgroundColor={Style.theme.error[50]}>
+                        Atrasada
+                      </Text>
+                    </>
+                  )}
+
                   <Text
                     variance="secondary"
                     alignItems="center"
@@ -108,7 +126,7 @@ const Index: React.FC = () => {
                     textColor="white"
                     variance="darkenPrimary"
                     fontSize={12}
-                    numberOfLines={3}
+                    numberOfLines={estaAtrasada ? 2 : 3}
                     ellipsizeMode="tail"
                     fontFamily="Poppins Medium">
                     {preventiva.observacoes}
@@ -118,7 +136,7 @@ const Index: React.FC = () => {
 
               <Styled css="position: absolute; right: 20px; top: -8px;">
                 <Text
-                  backgroundColor={Style.theme.secondary[95]}
+                  backgroundColor={Style.theme.secondary[90]}
                   borderRadius={14}
                   paddingLeft={10}
                   paddingRight={10}

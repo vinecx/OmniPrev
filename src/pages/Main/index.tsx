@@ -1,6 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
-import { ImageBackground, TouchableOpacity, Animated } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  ImageBackground,
+  TouchableOpacity,
+  Animated,
+  RefreshControl,
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useSelector } from 'react-redux';
@@ -21,6 +26,7 @@ const Main: React.FC = () => {
   const { navigate } = useNavigation();
   const { user } = useSelector<IRootState, AuthState>(state => state.auth);
 
+  const [loading, setLoading] = useState(false);
   const shortcuts = [
     {
       name: 'Preventivas',
@@ -66,6 +72,9 @@ const Main: React.FC = () => {
     useNativeDriver: true,
   }).start();
 
+  const load = () => {
+    setLoading(!loading);
+  };
   return (
     <ImageBackground
       source={Image}
@@ -79,6 +88,7 @@ const Main: React.FC = () => {
       imageStyle={{
         flex: 1,
         opacity: 0.5,
+        transform: [{ rotate: '180deg' }],
       }}>
       <SafeAreaView>
         <RenderIf condition={hasShortcutsToShow}>
@@ -132,6 +142,9 @@ const Main: React.FC = () => {
       <Animated.View style={{ transform: [{ translateY: zoom }], flex: 1 }}>
         <Styled flex={1} backgroundColor="white" borderTopRadius={30}>
           <ScrollView
+            refreshControl={
+              <RefreshControl onRefresh={() => load()} refreshing={loading} />
+            }
             contentContainerStyle={{
               minHeight: '100%',
               paddingHorizontal: 28,

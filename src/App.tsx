@@ -36,7 +36,7 @@ const App = () => {
   messaging()
     .registerDeviceForRemoteMessages()
     .then(async () => {
-      const token = await messaging().getToken();
+      // const token = await messaging().getToken();
       // console.log(token);
     });
 
