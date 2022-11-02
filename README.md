@@ -87,7 +87,7 @@ cd android
 
 <h1 id="build-section">Gerar .AAB para publicação</h1>
 
-Para gerar uma versão para publicação são necessários a chave da aplicação <b>.keystore</b> que deve estar nomeada da seguinte forma <code>controle_desperdicios-release.keystore</code> a qual já está configurada nos arquivos de configuração do android para geração da versão.
+Para gerar uma versão para publicação são necessários a chave da aplicação <b>.keystore</b> que deve estar nomeada da seguinte forma <code>omniprev-release.keystore</code> a qual já está configurada nos arquivos de configuração do android para geração da versão.
 
 A cada publicação da aplicação na playstore ou Apple Store é necessário incrementar a propriedade <code>versionCode</code> e <code>versionName</code>.
 
