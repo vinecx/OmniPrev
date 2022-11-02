@@ -1,4 +1,6 @@
-export interface IPreventiva {
+import { ITarefaPMImage, ITarefaRealizada } from '../preventivas/preventivas';
+
+export interface ICorretiva {
   id?: string;
 
   data: string;
@@ -10,17 +12,6 @@ export interface IPreventiva {
   observacoes: string;
 }
 
-export interface ITarefaPMImage {
-  path: string;
-  fileName: string;
-  fileSize: number;
-}
-
-export interface ITarefaRealizada {
-  observacao: string;
-  data: Date;
-}
-
 export interface ITarefaPM {
   andar: number;
   ambiente: string;
@@ -29,5 +20,4 @@ export interface ITarefaPM {
   imagesLink: ITarefaPMImage[];
 
   concluida?: ITarefaRealizada;
-  error?: ITarefaRealizada;
 }

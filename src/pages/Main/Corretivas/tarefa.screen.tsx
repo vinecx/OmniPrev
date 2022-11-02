@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ImageBackground, ToastAndroid } from 'react-native';
-import IconFa from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
@@ -17,13 +16,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { object, string } from 'yup';
 import Style from '../../../commons/Style';
 import CorretivasActions from '../../../shared/@types/model/corretivas/corretivas.actions';
-import PreventivaActions from '../../../shared/@types/model/preventivas/preventivas.actions';
 import { Button } from '../../../shared/components/commons/Button';
 import Input from '../../../shared/components/Input';
 import RenderIf from '../../../shared/utils/RenderIf';
 
 interface IParamsTarefa {
-  idPreventiva: string;
+  idCorretiva: string;
   idTarefa: number;
   tarefa: ITarefaPM;
 }
@@ -33,9 +31,8 @@ const schema = object({
 });
 
 const Index: React.FC = () => {
-  const { idPreventiva, idTarefa, tarefa } = useRoute().params as IParamsTarefa;
+  const { idCorretiva, idTarefa, tarefa } = useRoute().params as IParamsTarefa;
 
-  const preventivaRepo = new PreventivaActions();
   const corretivaRepo = new CorretivasActions();
 
   const { goBack } = useNavigation();
@@ -53,12 +50,11 @@ const Index: React.FC = () => {
     return <Text>Nada para carregar</Text>;
   }
 
-  const submit = async (observacoes: FieldValues, hasError = false) => {
-    const { error, errorMessage } = await preventivaRepo.concluirTarefa(
-      idPreventiva,
+  const submit = async (observacoes: FieldValues) => {
+    const { error, errorMessage } = await corretivaRepo.concluirTarefa(
+      idCorretiva,
       idTarefa,
       observacoes.observacoes,
-      hasError,
     );
 
     if (error) {
@@ -67,55 +63,11 @@ const Index: React.FC = () => {
         ToastAndroid.LONG,
       );
     } else {
-      if (hasError) {
-        tarefa.error = {
-          data: new Date(),
-          observacao: observacoes.observacoes,
-        };
-      } else {
-        tarefa.concluida = {
-          data: new Date(),
-          observacao: observacoes.observacoes,
-        };
-      }
+      tarefa.concluida = {
+        data: new Date(),
+        observacao: observacoes.observacoes,
+      };
     }
-
-    if (!hasError) {
-      goBack();
-    }
-  };
-
-  const submitCorretiva = async (observacoes: FieldValues) => {
-    const { error, errorMessage, data } = await preventivaRepo.buscarPorCodigo(
-      idPreventiva,
-    );
-
-    if (error) {
-      ToastAndroid.show(
-        'Houve um erro ao cadastrar corretiva. ' + errorMessage,
-        ToastAndroid.LONG,
-      );
-    } else {
-      if (data) {
-        await submit(observacoes, true);
-        const {
-          error: errorCadastroCorretiva,
-          errorMessage: errorMessageCorretiva,
-        } = await corretivaRepo.cadastrar({
-          ...data,
-          observacoes: observacoes.observacoes,
-          tarefas: [tarefa],
-        });
-
-        if (errorCadastroCorretiva) {
-          ToastAndroid.show(
-            'Ocorreu um erro: ' + JSON.stringify(errorMessageCorretiva),
-            ToastAndroid.LONG,
-          );
-        }
-      }
-    }
-
     goBack();
   };
 
@@ -134,7 +86,7 @@ const Index: React.FC = () => {
             {tarefa?.ambiente}
           </Text>
 
-          <RenderIf condition={!!tarefa.concluida || !!tarefa.error}>
+          <RenderIf condition={!!tarefa.concluida}>
             <Styled
               type="row"
               marginTop={-10}
@@ -150,9 +102,7 @@ const Index: React.FC = () => {
                 marginLeft={5}>
                 Concluída em:{' '}
                 {format(
-                  new Date(
-                    tarefa.concluida?.data ?? tarefa.error?.data ?? new Date(),
-                  ),
+                  new Date(tarefa.concluida?.data || new Date()),
                   'dd/MM/yyyy hh:mm',
                 )}
               </Text>
@@ -214,12 +164,12 @@ const Index: React.FC = () => {
 
       {/* Formulário de descrição da realização da tarefa */}
 
-      <RenderIf condition={!tarefa.concluida && !tarefa.error}>
+      <RenderIf condition={!tarefa.concluida}>
         <Styled style={{ paddingHorizontal: 28, marginBottom: 25 }}>
           <Controller
             control={control}
             name="observacoes"
-            render={({ field, fieldState, formState }) => (
+            render={({ field, fieldState }) => (
               <Input
                 label="Observações (Obrigatório)"
                 multiline={true}
@@ -244,14 +194,6 @@ const Index: React.FC = () => {
             size={'md'}
             title="Concluir a tarefa"
           />
-          <Button
-            marginTop={15}
-            leftIcon={<IconFa name="close" color="white" size={25} />}
-            variance={'danger'}
-            onPress={() => handleSubmit(submitCorretiva)()}
-            size={'md'}
-            title="Gerar corretiva"
-          />
         </Styled>
       </RenderIf>
       <RenderIf condition={!!tarefa.concluida}>
@@ -264,18 +206,6 @@ const Index: React.FC = () => {
           fontFamily="Poppins Medium">
           Observações:{'\n'}
           {tarefa.concluida?.observacao}
-        </Text>
-      </RenderIf>
-      <RenderIf condition={!!tarefa.error}>
-        <Text
-          marginLeft={28}
-          textColor="white"
-          marginBottom={25}
-          fontSize={15}
-          variance="secondary"
-          fontFamily="Poppins Medium">
-          Observações do erro encontrado:{'\n'}
-          {tarefa.error?.observacao}
         </Text>
       </RenderIf>
 

@@ -22,7 +22,6 @@ export const StackProps = {
 const Index = () => {
   const dispatch = useDispatch<IAppDispatch>();
   const [loading, setLoading] = useState(false);
-  const [openModalSetClient, setOpenModalSetClient] = useState(false);
   const [search, setSearch] = useState('');
   const [clientes, setClientes] = useState<ICliente[]>([]);
   const clientesActions = new ClienteActions();
@@ -56,63 +55,52 @@ const Index = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
-      <Styled lg="display: flex;" flex={1}>
-        <Styled type="container" flex={1} sm={''} lg={''} css="padding: 25px;">
-          <Text
-            fontSize={35}
-            variance="primary"
-            fontFamily="Poppins Regular"
-            marginBottom={35}>
-            Selecione o cliente para prosseguir
-          </Text>
+      <Styled type="none" flex={1} css="margin: 20% 25px;">
+        <Text
+          fontSize={25}
+          variance="primary"
+          fontFamily="Poppins SemiBold"
+          marginBottom={35}>
+          Selecione o cliente para prosseguir
+        </Text>
 
-          <Input
-            value={search}
-            onChangeText={value => setSearch(value)}
-            placeholder="Buscar por..."
-          />
+        <Input
+          value={search}
+          onChangeText={value => setSearch(value)}
+          placeholder="Buscar por..."
+        />
 
-          <ScrollView
-            style={{
-              flex: 1,
-              marginTop: 15,
-            }}>
-            {clientsFiltered.map(client => (
-              <TouchableOpacity
-                onPress={() => {
-                  dispatch(selectClient(client));
-                }}>
-                <Styled
-                  type="row"
-                  css="padding: 10px;"
-                  borderRadius="25px"
-                  marginBottom={15}>
-                  <Styled>
-                    <Title
-                      fontSize={20}
-                      variance="darkenPrimary"
-                      fontFamily="Poppins Medium">
-                      {client.nomeFantasia}
-                    </Title>
-                    <Subtitle fontSize={15} fontFamily="Poppins Light">
-                      {client.CNPJ}
-                    </Subtitle>
-                  </Styled>
-                  <Styled
-                    flex={1}
-                    justifyContent="center"
-                    alignItems="flex-end">
-                    <Icon
-                      size={30}
-                      name="caretright"
-                      color={Style.theme.darkenSecondary}
-                    />
-                  </Styled>
+        <ScrollView
+          style={{
+            flex: 1,
+            marginTop: 15,
+          }}>
+          {clientsFiltered.map(client => (
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(selectClient(client));
+              }}>
+              <Styled
+                type="row"
+                css="padding: 10px 25px;"
+                borderRadius="25px"
+                backgroundColor={Style.cleanColorDarker}
+                marginBottom={15}>
+                <Styled>
+                  <Title
+                    fontSize={16}
+                    variance="secondary"
+                    fontFamily="Poppins Medium">
+                    {client.nomeFantasia}
+                  </Title>
+                  <Subtitle fontSize={12} fontFamily="Poppins Light">
+                    {client.CNPJ}
+                  </Subtitle>
                 </Styled>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Styled>
+              </Styled>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </Styled>
     </SafeAreaView>
   );

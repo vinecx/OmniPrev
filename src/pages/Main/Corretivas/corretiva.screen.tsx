@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
+import { ICorretiva } from '../../../shared/@types/model/corretivas/corretivas';
 import { Text } from '../../../shared/components/commons/Text';
 import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
 
@@ -25,7 +25,7 @@ let scrollValue = 0;
 let headerVisible = true;
 
 const Index: React.FC = () => {
-  const preventiva = useRoute().params as IPreventiva | undefined;
+  const corretiva = useRoute().params as ICorretiva | undefined;
 
   // #region Animations
   const animation = useRef(new Animated.Value(1)).current;
@@ -59,13 +59,13 @@ const Index: React.FC = () => {
 
   const { navigate } = useNavigation();
 
-  if (!preventiva) {
+  if (!corretiva) {
     return <Text>Nada para carregar</Text>;
   }
 
   // Get first task image
   let firstImage: string = '';
-  const { tarefas } = preventiva;
+  const { tarefas } = corretiva;
   const qtdTarefas = tarefas ? tarefas.length : 0;
 
   if (tarefas && tarefas.length > 0) {
@@ -123,7 +123,7 @@ const Index: React.FC = () => {
               fontSize={32}
               fontFamily="Poppins Medium"
               marginBottom={-22}>
-              {preventiva?.localDesc}
+              {corretiva?.localDesc}
             </Text>
             <Styled type="row" marginLeft={5}>
               <Text
@@ -136,7 +136,7 @@ const Index: React.FC = () => {
                   size={10}
                 />
                 {'  '}
-                {format(new Date(preventiva?.data ?? new Date()), 'dd/MM/yyyy')}
+                {format(new Date(corretiva?.data ?? new Date()), 'dd/MM/yyyy')}
               </Text>
               <Text
                 marginLeft={15}
@@ -158,7 +158,7 @@ const Index: React.FC = () => {
               variance="darkenPrimary"
               fontSize={13}
               fontFamily="Poppins Medium">
-              {preventiva?.observacoes}
+              {corretiva?.observacoes}
             </Text>
 
             <Text
@@ -171,13 +171,13 @@ const Index: React.FC = () => {
               fontFamily="Poppins Medium">
               Tarefas:
             </Text>
-            {preventiva.tarefas.map((tarefa, idxTarefa) => (
+            {corretiva.tarefas.map((tarefa, idxTarefa) => (
               <TouchableOpacity
                 onPress={() =>
                   navigate(
-                    ScreenName.Main_preventivas_tarefas as never,
+                    ScreenName.Main_Corretivas_tarefas as never,
                     {
-                      idPreventiva: preventiva.id,
+                      idCorretiva: corretiva.id,
                       idTarefa: idxTarefa,
                       tarefa: tarefa,
                     } as never,
@@ -193,15 +193,15 @@ const Index: React.FC = () => {
                       {tarefa.comofazer}
                     </Text>
                   </Styled>
-                  {(tarefa.concluida || tarefa.error) && (
+                  {tarefa.concluida && (
                     <Styled marginLeft="auto">
                       <Text
                         textColor="white"
                         fontSize={10}
-                        backgroundColor={tarefa.concluida ? 'green' : 'red'}
+                        backgroundColor="green"
                         fontWeight="500"
                         style={{ paddingHorizontal: 10, borderRadius: 15 }}>
-                        {tarefa.concluida ? 'Concluida' : 'Erro na execução'}
+                        {tarefa.concluida ? 'Concluida' : 'A fazer'}
                       </Text>
                     </Styled>
                   )}

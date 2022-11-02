@@ -5,22 +5,22 @@ import {
 import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
 import * as React from 'react';
 import { ImageBackground, ScrollView, StyleSheet, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Divider, Drawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
+import Image from '../../../assets/images/header.jpeg';
 import Style from '../../../commons/Style';
-import { TIP_USUARIOS_DESCRIPTIONS } from '../../enum';
-import { Styled } from '../../utils/LayoutUtils/BaseStyle';
+import { hasPermissionToAcess, ScreenName } from '../../../routes/screens.enum';
+import RenderIf from '../../../shared/utils/RenderIf';
 import { IRootState } from '../../../store';
 import { logOut, selectClient } from '../../../store/modules/auth/authSlice';
 import { AuthState } from '../../@types/auth/types';
+import { TIP_USUARIOS_DESCRIPTIONS } from '../../enum';
+import { Styled } from '../../utils/LayoutUtils/BaseStyle';
 import { Button } from '../commons/Button';
 import { Text } from '../commons/Text';
 import { DrawerItem } from './styles';
-import Image from '../../../assets/images/header.jpeg';
-import RenderIf from '../../../shared/utils/RenderIf';
-import { hasPermissionToAcess, ScreenName } from '../../../routes/screens.enum';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 declare type Props = {
   state: DrawerNavigationState<ParamListBase>;
@@ -28,7 +28,7 @@ declare type Props = {
   descriptors: DrawerDescriptorMap;
 };
 
-const ReDrawer: React.FC<Props> = props => {
+const SidebarDrawer: React.FC<Props> = props => {
   const dispatch = useDispatch();
 
   const { user, clienteLogado } = useSelector<IRootState, AuthState>(
@@ -36,6 +36,7 @@ const ReDrawer: React.FC<Props> = props => {
   );
 
   const screens = Object.values(props.descriptors);
+
   const appScreens = screens.filter(
     x =>
       x.route.name.startsWith('app.') &&
@@ -71,7 +72,7 @@ const ReDrawer: React.FC<Props> = props => {
         resizeMode="cover"
         style={styles.image}
         imageStyle={{
-          opacity: 0.5,
+          opacity: 0.7,
           borderBottomRightRadius: 30,
         }}>
         <Styled
@@ -120,7 +121,7 @@ const ReDrawer: React.FC<Props> = props => {
           <Text
             fontSize={12}
             fontWeight="600"
-            variance="primary"
+            textColor={Style.fontColorLightGrey}
             marginTop={30}
             marginLeft={25}
             marginBottom={5}>
@@ -134,7 +135,7 @@ const ReDrawer: React.FC<Props> = props => {
               onPress={() => props.navigation.navigate(x.route.name)}>
               <Text
                 textColor={
-                  key === x.route.key ? 'white' : Style.theme.darkenSecondary
+                  key === x.route.key ? 'white' : Style.theme.mainColor
                 }
                 fontWeight="600">
                 {x.options.drawerLabel?.toString() || x.route.name}
@@ -157,7 +158,7 @@ const ReDrawer: React.FC<Props> = props => {
           <Text
             fontSize={12}
             fontWeight="600"
-            variance="primary"
+            textColor={Style.fontColorLightGrey}
             marginLeft={25}
             marginBottom={5}>
             Plano de manutenção
@@ -170,7 +171,7 @@ const ReDrawer: React.FC<Props> = props => {
               onPress={() => props.navigation.navigate(x.route.name)}>
               <Text
                 textColor={
-                  key === x.route.key ? 'white' : Style.theme.darkenSecondary
+                  key === x.route.key ? 'white' : Style.theme.mainColor
                 }
                 fontWeight="600">
                 {x.options.drawerLabel?.toString() || x.route.name}
@@ -191,9 +192,9 @@ const ReDrawer: React.FC<Props> = props => {
           />
 
           <Text
+            textColor={Style.fontColorLightGrey}
             fontSize={12}
             fontWeight="600"
-            variance="primary"
             marginLeft={25}
             marginBottom={5}>
             Manutenção
@@ -206,7 +207,7 @@ const ReDrawer: React.FC<Props> = props => {
               onPress={() => props.navigation.navigate(x.route.name)}>
               <Text
                 textColor={
-                  key === x.route.key ? 'white' : Style.theme.darkenSecondary
+                  key === x.route.key ? 'white' : Style.theme.mainColor
                 }
                 fontWeight="600">
                 {x.options.drawerLabel?.toString() || x.route.name}
@@ -229,7 +230,7 @@ const ReDrawer: React.FC<Props> = props => {
           <Text
             fontSize={12}
             fontWeight="600"
-            variance="primary"
+            variance="secondary"
             marginLeft={25}
             marginBottom={5}>
             Configurações
@@ -250,28 +251,27 @@ const ReDrawer: React.FC<Props> = props => {
           onPress={() => {
             dispatch(selectClient(undefined));
           }}>
-          <Styled type="row" alignItems="center" css="margin: 0px 8px;">
+          <Styled type="row" alignItems="center" css="margin: 15px 5px;">
             <Icon name="edit" size={25} color={Style.theme.secondary[30]} />
             {clienteLogado && (
               <Text
                 textColor={Style.theme.secondary[40]}
                 marginLeft={10}
                 fontWeight="700">
-                Cliente: {'\n'}
                 {clienteLogado.nomeFantasia}
               </Text>
             )}
           </Styled>
         </TouchableOpacity>
         <Button
-          title="Logout"
-          backgroundColor={Style.theme.secondary[70]}
-          textColor={Style.theme.secondary[99]}
-          size={'md'}
+          title="Sair"
+          backgroundColor={Style.cleanColorDarker}
+          textColor={Style.theme.mainColor}
+          size={'xxsm'}
           marginBottom={10}
           variance={'primary'}
           leftIcon={
-            <Icon name="sign-out" size={25} color={Style.theme.secondary[99]} />
+            <Icon name="sign-out" size={20} color={Style.theme.mainColor} />
           }
           onPress={() => dispatch(logOut())}
         />
@@ -287,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReDrawer;
+export default SidebarDrawer;

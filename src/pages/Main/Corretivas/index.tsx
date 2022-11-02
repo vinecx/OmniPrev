@@ -1,54 +1,54 @@
+import storage from '@react-native-firebase/storage';
+import { useNavigation } from '@react-navigation/native';
 import { differenceInDays, format, formatDistance } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ImageBackground } from 'react-native';
-import { IPreventiva } from '../../../shared/@types/model/preventivas/preventivas';
-import PreventivaActions from '../../../shared/@types/model/preventivas/preventivas.actions';
-import { Text } from '../../../shared/components/commons/Text';
-import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-
-import storage from '@react-native-firebase/storage';
-import Style from '../../../commons/Style';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { ScreenName } from '../../../routes/screens.enum';
-import { ptBR } from 'date-fns/locale';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import ListLoader from '../../../shared/components/loaders/list.loader';
 
+import Style from '../../../commons/Style';
+import { ScreenName } from '../../../routes/screens.enum';
+import { ICorretiva } from '../../../shared/@types/model/corretivas/corretivas';
+import CorretivaActions from '../../../shared/@types/model/corretivas/corretivas.actions';
+import { Text } from '../../../shared/components/commons/Text';
+import { Styled } from '../../../shared/utils/LayoutUtils/BaseStyle';
+
 const Index: React.FC = () => {
-  const [preventivas, setPreventivas] = useState<IPreventiva[]>([]);
+  const [corretivas, setCorretivas] = useState<ICorretiva[]>([]);
   const [loading, setLoading] = useState(false);
   const { navigate } = useNavigation();
 
-  const preventivaActions = new PreventivaActions();
+  const corretivaActions = new CorretivaActions();
 
-  const buscarPreventivas = async () => {
+  const buscarTodas = async () => {
     setLoading(true);
-    const { data } = await preventivaActions.buscarTodos();
+    const { data } = await corretivaActions.buscarTodos();
 
     if (data && Array.isArray(data)) {
-      setPreventivas(data);
+      setCorretivas(data);
     } else {
-      setPreventivas([]);
+      setCorretivas([]);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    buscarPreventivas();
+    buscarTodas();
   }, []);
 
   const animation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (preventivas.length > 0) {
+    if (corretivas.length > 0) {
       Animated.timing(animation, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }).start();
     }
-  }, [preventivas]);
+  }, [corretivas]);
 
   if (loading) {
     return <ListLoader qtdItems={15} />;
@@ -56,9 +56,9 @@ const Index: React.FC = () => {
 
   return (
     <Animated.View style={[{ opacity: animation }]}>
-      {preventivas.map(preventiva => {
+      {corretivas.map(corretiva => {
         let firstImage: string = '';
-        const { tarefas } = preventiva;
+        const { tarefas } = corretiva;
         const qtdTarefas = tarefas ? tarefas.length : 0;
 
         if (tarefas && tarefas.length > 0) {
@@ -75,15 +75,14 @@ const Index: React.FC = () => {
         }
 
         const estaAtrasada =
-          Math.sign(differenceInDays(new Date(preventiva.data), new Date())) <
-          0;
+          Math.sign(differenceInDays(new Date(corretiva.data), new Date())) < 0;
 
         return (
           <TouchableOpacity
             onPress={() =>
-              navigate('root.preventivas', {
-                screen: ScreenName.Main_preventivas,
-                params: preventiva,
+              navigate('root.corretivas', {
+                screen: ScreenName.Main_Corretivas,
+                params: corretiva,
               })
             }>
             <Styled
@@ -117,7 +116,7 @@ const Index: React.FC = () => {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     fontFamily="Poppins Medium">
-                    {preventiva.localDesc}
+                    {corretiva.localDesc}
                   </Text>
                   {estaAtrasada && (
                     <>
@@ -131,7 +130,7 @@ const Index: React.FC = () => {
                         border="1px solid"
                         borderColor={Style.theme.error[50]}>
                         Atrasada{' há '}
-                        {formatDistance(new Date(), new Date(preventiva.data), {
+                        {formatDistance(new Date(), new Date(corretiva.data), {
                           locale: ptBR,
                         })}
                       </Text>
@@ -157,7 +156,7 @@ const Index: React.FC = () => {
                     numberOfLines={estaAtrasada ? 2 : 3}
                     ellipsizeMode="tail"
                     fontFamily="Poppins Medium">
-                    {preventiva.observacoes}
+                    {corretiva.observacoes}
                   </Text>
                 </Styled>
               </Styled>
@@ -174,8 +173,8 @@ const Index: React.FC = () => {
                   paddingTop={5}
                   fontWeight="700"
                   variance="darkenPrimary"
-                  fontSize={10}>
-                  {format(new Date(preventiva.data), 'dd/MM/yyyy')}
+                  fontSize={12}>
+                  {format(new Date(corretiva.data), 'dd/MM/yyyy')}
                 </Text>
               </Styled>
             </Styled>

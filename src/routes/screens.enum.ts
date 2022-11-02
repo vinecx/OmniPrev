@@ -5,6 +5,8 @@ export enum ScreenName {
   Login = 'app.login',
   InitialPage = 'app.initial_app',
 
+  Relatorios = 'app.relatorios',
+
   Usuarios = 'manut.usuarios',
   Cadastro_Usuarios = 'manut.cad_usuarios',
 
@@ -25,6 +27,9 @@ export enum ScreenName {
   Cadastro_Preventivas = 'plan_manut.cad_preventivas',
 
   // Corretivas
+  Main_Corretivas = 'hidden.corretivas',
+  Main_Corretivas_tarefas = 'hidden.corretivas_tarefas',
+
   Corretivas = 'plan_manut.corretivas',
   Cadastro_Corretivas = 'plan_manut.cad_corretivas',
 }
@@ -46,6 +51,7 @@ const essenciais = [
 ];
 
 const cadastrosAdm = [
+  ScreenName.Relatorios,
   ScreenName.Usuarios,
   ScreenName.Cadastro_Usuarios,
   ScreenName.Clientes,

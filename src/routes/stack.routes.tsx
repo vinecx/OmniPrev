@@ -64,7 +64,6 @@ export const Navigation = () => {
         overlayColor: 'transparent',
 
         swipeEdgeWidth: 100,
-        headerTintColor: 'red',
         drawerStyle: {
           backgroundColor: 'transparent',
           width: isPortrait ? '75%' : '35%',
@@ -79,6 +78,8 @@ export const Navigation = () => {
         headerTitleStyle: {
           fontSize: 18,
           color: Style.theme.lighterSecondary,
+
+          fontFamily: 'Poppins SemiBold',
         },
 
         headerTransparent: true,
@@ -103,7 +104,11 @@ export const Navigation = () => {
         name={ScreenName.InitialPage}
         component={Main}
         options={{
-          headerTitle: 'Página inicial',
+          headerTitle: 'OmniPrev',
+          headerTitleStyle: {
+            fontFamily: 'Poppins SemiBold',
+            color: 'white',
+          },
           drawerItemStyle: { display: 'none' },
           drawerLabel: 'Início',
         }}
