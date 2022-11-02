@@ -22,6 +22,7 @@ export interface ICommonPropsStyle {
   height?: string | number;
   width?: string | number;
 
+  margin?: string | number;
   marginTop?: string | number;
   marginBottom?: string | number;
   marginRight?: string | number;
@@ -70,7 +71,12 @@ export const PropsStyle = (style: ICommonPropsStyle) => `
 
   ${style.height ? 'height: ' + style.height : ''};
   ${style.width ? 'width: ' + style.width : ''};
-
+  
+  ${
+    style.margin
+      ? `margin: ${style.margin}px ${style.margin}px ${style.margin}px ${style.margin}px`
+      : ''
+  };
   ${style.marginTop ? 'margin-top: ' + style.marginTop : ''};
   ${style.marginBottom ? 'margin-bottom: ' + style.marginBottom : ''};
   ${style.marginRight ? 'margin-right: ' + style.marginRight : ''};

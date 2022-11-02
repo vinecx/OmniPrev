@@ -1,16 +1,15 @@
-import { formatISOwithTimezone } from './../../../../commons/masks/masks';
-import { IRootState } from './../../../../store/index';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import { nanoid } from 'nanoid/non-secure';
 import store from '../../../../store';
+import { IRootState } from '../../../../store/index';
 import LocaisActions from '../locais/locais.actions';
-import { IPreventiva } from './preventivas';
+import { ICorretiva } from './corretivas';
 
-export default class PreventivaActions {
-  private repo = database();
-  private clientPath: string = 'preventivas';
-  private locais: LocaisActions;
+export default class CorretivasActions {
+  repo = database();
+  clientPath: string = 'corretivas';
+  locais: LocaisActions;
 
   constructor() {
     const state = store.getState() as IRootState;
@@ -22,7 +21,7 @@ export default class PreventivaActions {
     this.locais = new LocaisActions();
   }
 
-  async cadastrar(params: IPreventiva) {
+  async cadastrar(params: ICorretiva) {
     if (params.id) {
       await this.repo
         .ref(`/${this.clientPath}/${params.id}`)
@@ -31,7 +30,6 @@ export default class PreventivaActions {
           return { error: true, errorMessage: JSON.stringify(x, null, 2) };
         });
 
-      this.increaseCounter();
       return { error: false, errorMessage: '' };
     } else {
       params.id = nanoid(25);
@@ -46,16 +44,16 @@ export default class PreventivaActions {
     }
   }
 
-  async excluir(preventiva: IPreventiva) {
+  async excluir(corretiva: ICorretiva) {
     // Excluir imagens relacionadas a preventiva
-    preventiva.tarefas?.forEach(tarefa => {
+    corretiva.tarefas?.forEach(tarefa => {
       tarefa.imagesLink?.forEach(image => {
         storage().ref(image.fileName).delete();
       });
     });
 
     await this.repo
-      .ref(`/${this.clientPath}/${preventiva.id}`)
+      .ref(`/${this.clientPath}/${corretiva.id}`)
       .remove()
       .catch(x => {
         return { error: true, errorMessage: JSON.stringify(x, null, 2) };
@@ -69,26 +67,25 @@ export default class PreventivaActions {
 
   async buscarTodos() {
     return new Promise<{
-      data?: IPreventiva[];
+      data?: ICorretiva[];
       error: boolean;
       errorMessage: string;
     }>(async (resolve, reject) => {
-      let qtdPreventivas = 0;
+      let qtdCorretivas = 0;
       const response = await this.repo
         .ref(`/${this.clientPath}`)
         .orderByChild('data')
         .once('value')
-        .then(preventivas => {
-          const a: IPreventiva[] = [];
+        .then(corretivas => {
+          const a: ICorretiva[] = [];
 
-          preventivas.forEach(preventiva => {
-            a.push(preventiva.val());
+          corretivas.forEach(corretiva => {
+            a.push(corretiva.val());
 
             return false;
           });
 
-          qtdPreventivas = preventivas.numChildren();
-
+          qtdCorretivas = corretivas.numChildren();
           return a;
         })
         .catch(x => {
@@ -98,23 +95,22 @@ export default class PreventivaActions {
           });
         });
 
-      const preventivas: IPreventiva[] = [];
+      const corretivas: ICorretiva[] = [];
 
-      await new Promise(async resolveInner => {
+      await new Promise(resolveInner => {
         if (Array.isArray(response) && response.length > 0) {
-          await response.forEach(async (x: IPreventiva, index) => {
+          response.forEach(async (x: ICorretiva, index) => {
             let obj = x;
 
             const { data } = await this.locais.buscarPorCodigo(obj.localId);
 
             if (data) {
               obj.localDesc = data.nome;
-            } else {
-              obj.localDesc = 'Local não encontrado';
             }
 
-            preventivas.push(obj);
-            if (preventivas.length === qtdPreventivas) {
+            corretivas.push(obj);
+
+            if (corretivas.length === qtdCorretivas) {
               resolveInner(true);
             }
           });
@@ -126,23 +122,18 @@ export default class PreventivaActions {
       resolve({
         error: false,
         errorMessage: '',
-        data: preventivas,
+        data: corretivas,
       });
     });
   }
 
   async concluirTarefa(
-    idPreventiva: string,
+    idCorretiva: string,
     idTarefa: number,
     observacao: String,
-    hasError: boolean,
   ) {
     await this.repo
-      .ref(
-        `/${this.clientPath}/${idPreventiva}/tarefas/${idTarefa}/${
-          hasError ? 'error' : 'concluida'
-        }`,
-      )
+      .ref(`/${this.clientPath}/${idCorretiva}/tarefas/${idTarefa}/concluida`)
       .set({
         observacao,
         data: new Date().toLocaleString(),
@@ -159,12 +150,12 @@ export default class PreventivaActions {
       const response = await this.repo
         .ref(`/${this.clientPath}/${codigo}`)
         .once('value')
-        .then<IPreventiva>(x => x.val())
+        .then<ICorretiva>(x => x.val())
         .catch(x => {
           throw JSON.stringify(x, null, 2);
         });
 
-      const preventiva: IPreventiva = response;
+      const corretiva: ICorretiva = response;
 
       const { data } = await this.locais.buscarPorCodigo(response.localId);
 
@@ -175,20 +166,10 @@ export default class PreventivaActions {
       return {
         error: false,
         errorMessage: '',
-        data: preventiva,
+        data: corretiva,
       };
     } catch (e) {
       return { error: true, errorMessage: String(e) };
     }
   }
-
-  async increaseCounter() {
-    await this.repo
-      .ref(`/${this.clientPath}_count}`)
-      .set(+1)
-      .catch(x => {
-        return { error: true, errorMessage: JSON.stringify(x, null, 2) };
-      });
-  }
-  async decreaseCounter() {}
 }

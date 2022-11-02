@@ -82,12 +82,12 @@ const Style = {
   textError: '#E12',
   fontColorDark: '#212121',
   fontSizeSmall: '12px',
-  backgroundColorGrey: '#F8F8F8',
+  backgroundColorGrey: 'hsl(0, 0%, 90%)',
   fontSizeDefault: '16px',
 
   fontFamilyMulish: 'Mulish',
   fontColorDarkGrey: 'grey',
-  backgroundColorGrey: 'hsl(0, 0%, 90%)',
+  fontColorLightGrey: 'rgb(185,185,185)',
   textSuccess: 'hls(120, 50%, 45%)',
 
   ...InputStyles,

@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  ImageBackground,
-  TouchableOpacity,
   Animated,
+  ImageBackground,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -19,18 +19,30 @@ import RenderIf from '../../shared/utils/RenderIf';
 import { CardContainer, CardTitle } from './styles';
 
 import Preventivas from './Preventivas';
-import { AuthState } from '../../shared/@types/auth/types';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthState } from '../../shared/@types/auth/types';
+import Corretivas from './Corretivas';
 
 const Main: React.FC = () => {
   const { navigate } = useNavigation();
   const { user } = useSelector<IRootState, AuthState>(state => state.auth);
+
+  const [showList, setShowList] = useState<'preventivas' | 'corretivas'>(
+    'preventivas',
+  );
 
   const [loading, setLoading] = useState(false);
   const shortcuts = [
     {
       name: 'Preventivas',
       screen: ScreenName.Preventivas,
+      icon: 'tools',
+      hasAccess: hasPermissionToAcess(ScreenName.Preventivas, user?.tipUsuario),
+    },
+    {
+      name: 'Corretivas',
+      screen: ScreenName.Corretivas,
       icon: 'tools',
       hasAccess: hasPermissionToAcess(ScreenName.Preventivas, user?.tipUsuario),
     },
@@ -73,7 +85,7 @@ const Main: React.FC = () => {
   }).start();
 
   const load = () => {
-    setLoading(!loading);
+    setLoading(true);
   };
   return (
     <ImageBackground
@@ -98,11 +110,12 @@ const Main: React.FC = () => {
               marginBottom={-10}
               marginLeft={25}
               alignItems="center">
-              <Icon name="star" size={15} color={Style.theme.secondary[99]} />
+              <Icon name="star" size={11} color={Style.theme.secondary[70]} />
               <Text
-                textColor={Style.theme.secondary[99]}
+                fontSize={13}
+                textColor={Style.theme.secondary[80]}
                 marginLeft={8}
-                fontWeight="700">
+                fontWeight="400">
                 Acesso rápido
               </Text>
             </Styled>
@@ -152,27 +165,91 @@ const Main: React.FC = () => {
             }}>
             <Title
               textColor={Style.theme.secondary[30]}
-              fontSize={25}
+              fontSize={20}
               fontFamily="Poppins Medium">
               Olá, {user?.nome}
             </Title>
             <Text
-              fontSize={15}
+              fontSize={12}
               fontWeight="300"
               fontFamily="Poppins Light"
               textColor={Style.theme.secondary[60]}>
               Acesse o menu lateral para acessar as demais funcionalidades!
             </Text>
-
             <Styled marginTop={25}>
-              <Text
-                fontSize={20}
-                fontWeight="500"
-                fontFamily="Poppins Light"
-                textColor={Style.theme.secondary[50]}>
-                Preventivas
-              </Text>
-              <Preventivas />
+              <Styled
+                type="row"
+                border="1px solid;"
+                borderColor={Style.cleanColorDarker}
+                borderRadius={50}
+                css="padding: 0px;"
+                marginBottom={25}
+                style={{
+                  justifyContent: 'space-between',
+                }}>
+                <TouchableOpacity
+                  onPress={() => setShowList('preventivas')}
+                  style={{
+                    backgroundColor:
+                      showList === 'preventivas'
+                        ? Style.cleanColorDarker
+                        : 'transparent',
+                    flex: 1,
+                    borderRadius: 50,
+                  }}>
+                  <Text
+                    fontSize={18}
+                    alignText="center"
+                    fontFamily={
+                      showList === 'preventivas'
+                        ? 'Poppins Medium'
+                        : 'Poppins Light'
+                    }
+                    textColor={
+                      showList === 'preventivas'
+                        ? Style.theme.mainColor
+                        : Style.theme.secondary[50]
+                    }>
+                    Preventivas
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowList('corretivas')}
+                  style={{
+                    backgroundColor:
+                      showList === 'corretivas'
+                        ? Style.cleanColorDarker
+                        : 'transparent',
+                    flex: 1,
+                    borderRadius: 50,
+                    height: '100%',
+                  }}>
+                  <Text
+                    fontSize={18}
+                    alignText="center"
+                    fontFamily={
+                      showList === 'corretivas'
+                        ? 'Poppins Medium'
+                        : 'Poppins Light'
+                    }
+                    textColor={
+                      showList === 'corretivas'
+                        ? Style.theme.mainColor
+                        : Style.theme.secondary[50]
+                    }>
+                    Corretivas
+                  </Text>
+                </TouchableOpacity>
+              </Styled>
+              {showList === 'preventivas' ? (
+                <Styled>
+                  <Preventivas />
+                </Styled>
+              ) : (
+                <Styled>
+                  <Corretivas />
+                </Styled>
+              )}
             </Styled>
           </ScrollView>
         </Styled>

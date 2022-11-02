@@ -9,6 +9,7 @@ import Itens from './items';
 import Locais from './locais';
 import Usuarios from './usuarios';
 import Preventivas from './preventivas';
+import Corretivas from './corretivas';
 
 export const AdministradorScreens = [
   <Drawer.Screen
@@ -17,6 +18,14 @@ export const AdministradorScreens = [
     options={{
       headerTitle: 'Preventivas',
       drawerLabel: 'Preventivas',
+    }}
+  />,
+  <Drawer.Screen
+    name={ScreenName.Corretivas}
+    component={() => <Corretivas />}
+    options={{
+      headerTitle: 'Corretivas',
+      drawerLabel: 'Corretivas',
     }}
   />,
   <Drawer.Screen
